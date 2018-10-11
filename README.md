@@ -4,7 +4,25 @@
 
 ## Description
 
-Work in progress. Do not Use.
+Work in progress. DO NOT USE.
+
+## How to Install: 
+
+checkout this repo and
+
+```
+python setup.py sdist
+
+OR
+
+python setup.py bdist
+
+OR 
+
+python setup.py bdist_wheel
+
+```
+
 
 
 ## Note
