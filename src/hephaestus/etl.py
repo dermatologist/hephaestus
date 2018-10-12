@@ -1,35 +1,9 @@
 import bonobo
-from bonobo.config import use
-from sqlalchemy.orm import Session
 
+import src.hephaestus.extract.test as test
+import src.hephaestus.load.test as testload
 import src.hephaestus.service.service as service
-
-
-@use('mysql_engine', 'mysql_base')
-def extract(mysql_engine, mysql_base):
-    """Placeholder, change, rename, remove... """
-    # yield 'hello'
-    # yield 'world'
-    session = Session(mysql_engine)
-    Patient = mysql_base.classes.concept
-    patients = session.query(Patient).all()
-    for patient in patients:
-        yield patient
-
-def transform(*args):
-    """Placeholder, change, rename, remove... """
-    for arg in args:
-        yield arg
-
-
-# @use('session')
-def load(*args):
-    """Placeholder, change, rename, remove... """
-    print(*args)
-    # for arg in args:
-    #     print(arg)
-    #     session.add(arg)
-    # session.commit()
+import src.hephaestus.transform.openmrs_cdm5 as testtransform
 
 
 def get_graph(**options):
@@ -40,13 +14,11 @@ def get_graph(**options):
 
     """
     graph = bonobo.Graph()
-    graph.add_chain(extract, transform, load)
+    graph.add_chain(test.extract, testtransform.transform, testload.load)
 
     return graph
 
 
-
-# The __main__ block actually execute the graph.
 if __name__ == '__main__':
     parser = bonobo.get_argument_parser()
     with bonobo.parse_args(parser) as options:
