@@ -1,7 +1,6 @@
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import Session
-from sqlalchemy import create_engine
 from sqlalchemy import MetaData
+from sqlalchemy import create_engine
+from sqlalchemy.ext.automap import automap_base
 
 
 def connect(user, password, db, host='localhost', port=5432):

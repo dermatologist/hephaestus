@@ -18,10 +18,10 @@ Note: This skeleton file can be safely removed if not needed!
 from __future__ import division, print_function, absolute_import
 
 import argparse
-import sys
 import logging
+import sys
 
-from hephaestus import __version__
+from src.hephaestus import __version__
 
 __author__ = "Bell Eapen"
 __copyright__ = "Bell Eapen"
