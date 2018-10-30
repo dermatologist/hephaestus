@@ -54,3 +54,13 @@ def extract_encounter(mysql_engine, mysql_base):
     encounters = session.query(Encounter)
     for encounter in encounters:
         yield encounter
+
+
+# line 210
+@use('mysql_engine', 'mysql_base')
+def extract_concept(mysql_engine, mysql_base, concept_id):
+    session = Session(mysql_engine)
+    Concept = mysql_base.classes.concept
+    concepts = session.query(Concept).filter(Concept.concept_id == concept_id)
+    for concept in concepts:
+        yield concept
