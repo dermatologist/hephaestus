@@ -30,4 +30,18 @@ def transform_person(openmrs_person, cdm_person):
     cdm_person.month_of_birth = dt.month
     cdm_person.day_of_birth = dt.day
 
+    # Time of birth
+    cdm_person.time_of_birth = None
+
+    # Race
+    cdm_person.race_concept_id = C.OMOP_CONSTANTS.DEFAULT_RACE_CONCEPT
+
+    # Ethinicity
+    cdm_person.ethnicity_concept_id = 0
+
+    cdm_person.location_id = None
+    cdm_person.provider_id = None
+    cdm_person.care_site_id = None
+
+
     return cdm_person
