@@ -15,7 +15,7 @@ Transforms an OpenMRS person to CDM person
 """
 
 
-def transform_person(openmrs_person, cdm_person):
+def transform_person(openmrs_person, cdm_person, patient_identifier=None):
     cdm_person.person_id = openmrs_person.person_id
 
     cdm_person.gender_concept_id = 0  # Default unknown value
@@ -43,5 +43,16 @@ def transform_person(openmrs_person, cdm_person):
     cdm_person.provider_id = None
     cdm_person.care_site_id = None
 
+    # Person source value
+    if patient_identifier is not None:
+        cdm_person.person_source_value = openmrs_person.person_id + patient_identifier
+    else:
+        cdm_person.person_source_value = None
+
+    # Gender source
+    if openmrs_person.gender is not None:
+        cdm_person.gender_source_value = openmrs_person.gender
+    else:
+        cdm_person.gender_source_value = None
 
     return cdm_person
