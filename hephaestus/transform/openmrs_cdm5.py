@@ -1,6 +1,6 @@
 from datetime import datetime
 
-import src.hephaestus.constants as C
+import hephaestus.constants as C
 
 
 def transform(*args):

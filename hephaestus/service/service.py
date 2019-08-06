@@ -1,8 +1,8 @@
 from sqlalchemy.ext.automap import automap_base
 
-import src.hephaestus.service.mysql as mysql
-import src.hephaestus.service.pgsql as pgsql
-from src.hephaestus.constants import OMOP_CONSTANTS as C
+import hephaestus.service.mysql as mysql
+import hephaestus.service.pgsql as pgsql
+from hephaestus.constants import OMOP_CONSTANTS as C
 
 
 def get_services(**options):

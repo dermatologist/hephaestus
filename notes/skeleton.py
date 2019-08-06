@@ -21,7 +21,7 @@ import argparse
 import logging
 import sys
 
-from src.hephaestus import __version__
+from hephaestus import __version__
 
 __author__ = "Bell Eapen"
 __copyright__ = "Bell Eapen"
