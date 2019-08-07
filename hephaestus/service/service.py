@@ -2,7 +2,7 @@ from sqlalchemy.ext.automap import automap_base
 
 import hephaestus.service.mysql as mysql
 import hephaestus.service.pgsql as pgsql
-from hephaestus.constants import OMOP_CONSTANTS as C
+from hephaestus.settings import LocalSettings as C
 
 
 def get_services(**options):
@@ -16,7 +16,7 @@ def get_services(**options):
     :return: dict
     """
     try:
-        mysql_engine = mysql.get_service(C.USER_NAME, C.USER_PASS, C.USER_HOST, C.USER_PORT, C.USER_DB)
+        mysql_engine = mysql.get_service(C.SOURCE_USER_NAME, C.SOURCE_USER_PASS, C.SOURCE_USER_HOST, C.SOURCE_USER_PORT, C.SOURCE_USER_DB)
         mysql_base = automap_base()
         mysql_base.prepare(mysql_engine, reflect=True, name_for_scalar_relationship=name_for_scalar_relationship)
     except:
@@ -24,7 +24,9 @@ def get_services(**options):
         mysql_base = ""
 
     try:
-        pgsql_engine = pgsql.get_service(C.USER_NAME, C.USER_PASS, C.USER_HOST, C.USER_PORT, C.USER_DB)
+        pgsql_engine = pgsql.get_service(C.CDM_USER_NAME, C.CDM_USER_PASS,
+                                         C.CDM_USER_HOST, C.CDM_USER_PORT, C.CDM_USER_DB)
+        pgsql.get_service()
         pgsql_base = automap_base()
         pgsql_base.prepare(pgsql_engine, reflect=True)
     except:
