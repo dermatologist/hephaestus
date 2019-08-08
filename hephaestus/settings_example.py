@@ -17,4 +17,4 @@ class LocalSettings(object):
     CDM_USER_HOST = "192.168.0.250"
     CDM_USER_PORT = 5432
     CDM_USER_SCHEMA = "hephaestus"
-    CDM_VOCAB = "cdm"
+    CDM_USER_VOCAB = "cdm"

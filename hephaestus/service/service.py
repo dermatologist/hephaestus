@@ -24,9 +24,7 @@ def get_services(**options):
         mysql_base = ""
 
     try:
-        pgsql_engine = pgsql.get_service(C.CDM_USER_NAME, C.CDM_USER_PASS,
-                                         C.CDM_USER_HOST, C.CDM_USER_PORT, C.CDM_USER_DB)
-        pgsql.get_service()
+        pgsql_engine = pgsql.get_writer()
         pgsql_base = automap_base()
         pgsql_base.prepare(pgsql_engine, reflect=True)
     except:

@@ -1,2 +1,3 @@
 bonobo
 sqlalchemy
+psycopg2
