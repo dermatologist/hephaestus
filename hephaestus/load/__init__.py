@@ -1,3 +1,4 @@
+from sqlalchemy import Column, String, Integer, Date, DateTime
 from sqlalchemy.ext.automap import automap_base
 
 from hephaestus.service import pgsql
@@ -53,4 +54,45 @@ Dose_era = Base.classes.dose_era
 Cohort = Base.classes.cohort
 Domain = Base.classes.domain
 
-## TODO: create classes that failed automaping (commented out) above
+
+class CDMMetadata(Base):
+    __tablename__ = 'metadata'
+    # override schema elements like Columns
+    metadata_concept_id = Column(Integer, primary_key=True)
+    metadata_type_concept_id = Column(Integer)
+    name = Column(String)
+    value_as_string = Column(String)
+    value_as_concept_id = Column(Integer)
+    metadata_date = Column(Date)
+    metadata_datetime = Column(DateTime)
+
+
+class Cdm_source(Base):
+    __tablename__ = "cdm_source"
+    cdm_source_name = Column(String)
+    cdm_source_abbreviation = Column(String)
+    cdm_holder = Column(String)
+    source_description = Column(String)
+    source_documentation_reference = Column(String)
+    cdm_etl_reference = Column(String)
+    source_release_date = Column(Date)
+    cdm_release_date = Column(Date)
+    cdm_version = Column(String)
+    vocabulary_version = Column(String)
+
+
+class Concept_synonym(Base):
+    __tablename__ = 'concept_synonym'
+    concept_id = Column(Integer)
+    concept_synonym_name = Column(String)
+    language_concept_id = Column(Integer)
+
+
+class Fact_relationship(Base):
+    domain_concept_id = Column(Integer)
+    fact_id_1 = Column(Integer)
+    domain_concept_id_2 = Column(Integer)
+    fact_id_2 = Column(Integer)
+    relationship_concept_id = Column(Integer)
+
+# TODO: To refactor this file
