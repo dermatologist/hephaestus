@@ -18,8 +18,8 @@ Note: This skeleton file can be safely removed if not needed!
 from __future__ import division, print_function, absolute_import
 
 import argparse
-import sys
 import logging
+import sys
 
 from hephaestus import __version__
 
