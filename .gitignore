@@ -43,3 +43,4 @@ MANIFEST
 
 # Local settings
 hephaestus/settings.py
+hephaestus/model
