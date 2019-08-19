@@ -1,8 +1,11 @@
-from sqlalchemy import Column, String, Integer, Date, DateTime
 from sqlalchemy.ext.automap import automap_base
 
-Base = automap_base()
+from hephaestus.service import pgsql
 
+Base = automap_base()
+engine = pgsql.get_reader()
+# reflect the tables
+Base.prepare(engine, reflect=True)
 
 # CDMMetadata = Base.classes.metadata
 # Cdm_source = Base.classes.cdm_source
