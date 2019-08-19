@@ -67,3 +67,59 @@ CREATE INDEX X_MRCONSO_STR ON MRCONSO(STR)
 
 
 ```
+
+# https://github.com/E-Health/OHDSIconceptid2cui
+```sql
+DROP TABLE IF EXISTS vocabulary.OHDSI_to_CUI;
+CREATE TABLE vocabulary.OHDSI_to_CUI AS (
+SELECT AAA.* FROM (
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='RXNORM' AND B.vocabulary_id='RxNorm'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+UNION
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='CPT' AND B.vocabulary_id='CPT4'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+UNION
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='HCPCS' AND B.vocabulary_id='HCPCS'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+UNION
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='ICD10CM' AND B.vocabulary_id='ICD10CM'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+UNION
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='ICD10PCS' AND B.vocabulary_id='ICD10PCS'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+UNION
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='ICD9CM' AND B.vocabulary_id='ICD9CM'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+UNION
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='MDR' AND B.vocabulary_id='MedDRA'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+UNION
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='HCPCS' AND B.vocabulary_id='HCPCS'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+UNION
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='NDFRT' AND B.vocabulary_id='NDFRT'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+UNION
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='SNOMEDCT_US' AND B.vocabulary_id='SNOMED'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+UNION
+SELECT AA.* FROM (
+SELECT A.CUI, B.concept_id, B.vocabulary_id FROM umls_cui.MRCONSO as A LEFT JOIN vocabulary.concept as B ON A.CODE=B.concept_code WHERE A.LAT='ENG' AND A.SAB='LNC' AND B.vocabulary_id='LOINC'
+) AA GROUP BY AA.CUI, AA.concept_id, AA.vocabulary_id
+) as AAA
+);
+
+CREATE INDEX X_cui ON vocabulary.OHDSI_to_CUI(cui);
+CREATE INDEX X_concept_id ON vocabulary.OHDSI_to_CUI(concept_id);
+CREATE INDEX X_vocabulary_id ON vocabulary.OHDSI_to_CUI(vocabulary_id);
+```
