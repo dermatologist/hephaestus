@@ -1,9 +1,10 @@
 from gensim.models import KeyedVectors
-from sqlalchemy.orm import sessionmaker
-from hephaestus.service import pgsql
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy.orm import sessionmaker
+
 from hephaestus.cdm.automap import Concept
+from hephaestus.service import pgsql
 
 Base = declarative_base()
 
@@ -83,9 +84,32 @@ class Cui(object):
     def concept(self, concept):
         self._concept = concept
 
+    """
+    Return cocepts and cuis similar to the given one
+    
+    input: number of similar ones to return: ex: 2
+    output: list of [cui (string), concept_id (int), similarity score (float), 
+    concept_name (string)]
+    Example: [['C0002268', 40342168, 0.9437048435211182, 'Alpha-galactosidase A'], 
+    ['C0072596', 4321882, 0.9419581890106201, 'alpha-Dextrin endo-1,6-alpha-glucosidase']]
+
+    """
+
+    def similar_concepts(self, tn):
+        # query using gensim cui[0] is the cui and cui[1] is the score
+        cuis = self._model.most_similar(self._cui, topn=tn)
+        concepts = []
+        for cui in cuis:
+            # Query the Ohdsi2Cui table  - cui to concept_id mapping
+            ohdsi_cui = self._session.query(Ohdsi2Cui).filter_by(cui=cui[0]).one()
+            _c = self._session.query(Concept).filter_by(concept_id=ohdsi_cui.concept_id).one()
+            concept = [cui[0], ohdsi_cui.concept_id, cui[1], _c.concept_name]
+            concepts.append(concept)
+        return concepts
 
 if __name__ == '__main__':
     _cui = Cui('cui2vec_gensim.bin')
-    _cui.cui = 'C1952632'
+    _cui.cui = 'C0000052'
     print(_cui.concept_id)
     print(_cui.concept)
+    print(_cui.similar_concepts(2))
