@@ -1,3 +1,4 @@
 bonobo
 sqlalchemy
 psycopg2
+click

@@ -1,4 +1,8 @@
+import urllib.request
+import zipfile
+
 from gensim.models import KeyedVectors
+from gensim.scripts.glove2word2vec import glove2word2vec
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -29,7 +33,7 @@ Session = sessionmaker(bind=pgsql.get_reader())
 
 class Cui(object):
 
-    def __init__(self, model):
+    def __init__(self, model='cui2vec_gensim.bin'):
         __model = '../model/' + model
         self._model = KeyedVectors.load_word2vec_format(__model, unicode_errors='ignore', binary=True)
         self._cui = ""
@@ -107,9 +111,36 @@ class Cui(object):
             concepts.append(concept)
         return concepts
 
+    """
+    static function that downloads and converts the cui2vec model to gensim binary format
+    
+    """
+
+    @staticmethod
+    def init_model():
+        url = 'https://ndownloader.figshare.com/files/10959626'
+        print('Downloading model...')
+        urllib.request.urlretrieve(url, '../model/' + 'cui2vec_pretrained.csv.zip')
+        print('Unzipping model...')
+        with zipfile.ZipFile('../model/' + 'cui2vec_pretrained.csv.zip', "r") as zip_ref:
+            zip_ref.extractall('../model/')
+        print('Processing model...')
+        with open('../model/' + 'cui2vec_pretrained.csv', 'r') as f:
+            with open('../model/' + "cui2vec_g.txt", 'w') as f1:
+                next(f)  # skip header line
+                count = 0
+                for line in f:
+                    line = '"'.join(line.split()).replace('"', '')
+                    line = ",".join(line.split()).replace(',', ' ')
+                    line = line + ' \n'
+                    f1.write(line)
+                    count += 1
+        print('Converting model ...')
+        glove2word2vec('../model/' + "cui2vec_g.txt", '../model/' + "cui2vec_w.txt")
+        wv_from_text = KeyedVectors.load_word2vec_format('../model/' + 'cui2vec_w.txt', unicode_errors='ignore')
+        wv_from_text.save_word2vec_format('../model/' + 'cui2vec_gensim.bin', binary=True)
+        print('Model processing completed ..')
+
+
 if __name__ == '__main__':
-    _cui = Cui('cui2vec_gensim.bin')
-    _cui.cui = 'C0000052'
-    print(_cui.concept_id)
-    print(_cui.concept)
-    print(_cui.similar_concepts(2))
+    Cui.init_model()

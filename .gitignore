@@ -43,4 +43,6 @@ MANIFEST
 
 # Local settings
 hephaestus/settings.py
-hephaestus/model
+hephaestus/model/*
+# except
+!hephaestus/model/placeholder.md
