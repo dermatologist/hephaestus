@@ -1,8 +1,6 @@
 
 # :stars: Hephaestus - Data warehouse and ETL tools for open source EMRs!
 
-![Hephaestus](https://raw.github.com/dermatologist/hephaestus/develop/notes/hephaestus.png)
-
 ## About
 
 Efficient and effective health data warehousing and analysis require a common data model. 
@@ -20,6 +18,8 @@ Each data source requires customized ETL tools for this conversion. :stars: Heph
 * Create libraries to support common use cases such as vocabulary lookup and [Cui2Vec](http://cui2vec.dbmi.hms.harvard.edu/) based concept similarity search.
 * Support patient-level predictions.
 * Extend OMOP for public health use cases and support cohort-level predictions using MLlib (Spark's machine learning library).
+
+![Hephaestus](https://raw.github.com/dermatologist/hephaestus/develop/notes/hephaestus.png)
 
 ## Features (Expected)
 
