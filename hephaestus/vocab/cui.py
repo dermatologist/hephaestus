@@ -111,6 +111,45 @@ class Cui(object):
             concepts.append(concept)
         return concepts
 
+    def similar_concepts_with_neg(self, neg_cui, tn):
+        # query using gensim cui[0] is the cui and cui[1] is the score
+        cuis = self._model.most_similar(positive=self._cui, negative=neg_cui, topn=tn)
+        concepts = []
+        for cui in cuis:
+            # Query the Ohdsi2Cui table  - cui to concept_id mapping
+            ohdsi_cui = self._session.query(Ohdsi2Cui).filter_by(cui=cui[0]).one()
+            _c = self._session.query(Concept).filter_by(concept_id=ohdsi_cui.concept_id).one()
+            concept = [cui[0], ohdsi_cui.concept_id, cui[1], _c.concept_name]
+            concepts.append(concept)
+        return concepts
+
+    # Find the top-N most similar concepts, using the multiplicative combination objective,
+    def cosmul_similar_concepts(self, tn):
+        return self._model.most_similar_cosmul(self._cui, topn=tn)
+
+    def cosmul_similar_concepts_with_neg(self, neg_cui, tn):
+        return self._model.most_similar_cosmul(positive=self._cui, negative=neg_cui, topn=tn)
+
+    def outlier(self, cuis):
+        return self._model.doesnt_match(cuis)
+
+    # Compute cosine distances from given concept or vector to all concepts.
+    def distances(self, cuis):
+        return self._model.distances(self._cui, cuis)
+
+    # Compute cosine similarities
+    def combinations(self, cui1, cui2):
+        return self._model.cosine_similarities(self._model[self._cui],
+                                               vectors_all=(
+                                                   self._model[cui1],
+                                                   self._model[cui2],
+                                                   self._model[cui1] + self._model[cui2]
+                                               ))
+
+    # Get the words closer to cui1 than cui2
+    def closer_to(self, cui1, cui2):
+        return self._model.words_closer_than(cui1, cui2)
+
     """
     static function that downloads and converts the cui2vec model to gensim binary format
     
