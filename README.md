@@ -1,5 +1,5 @@
 
-# :stars: Hephaestus - Data warehouse and ETL tools for open source EMRs!
+# :stars: Hephaestus - Data warehouse tools for Digital Health!
 
 ## About
 
