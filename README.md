@@ -1,5 +1,5 @@
 
-# :stars: Hephaestus - Data warehouse tools for Digital Health!
+# :stars: Hephaestus - Data analytics tools for Digital Health!
 
 ## About
 
