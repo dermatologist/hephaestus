@@ -111,6 +111,13 @@ class Cui(object):
             concepts.append(concept)
         return concepts
 
+    def cuis_to_concepts(self, cuis):
+        concepts = []
+        results = self._session.query(Ohdsi2Cui.concept_id).filter(Ohdsi2Cui.cui.in_(cuis)).all()
+        for result in results:
+            concepts.append(result.concept_id)
+        return concepts
+
     def similar_concepts_with_neg(self, neg_cui, tn):
         # query using gensim cui[0] is the cui and cui[1] is the score
         cuis = self._model.most_similar(positive=self._cui, negative=neg_cui, topn=tn)

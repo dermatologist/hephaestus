@@ -30,3 +30,8 @@ class TestCui(TestCase):
     def test_closer_to(self):
         concepts = self._cui.closer_to('C0031951', 'C0887117')
         self.assertGreater(len(concepts), 0)
+
+    def test_cuis_to_concepts(self):
+        cuis = ['C0002268', 'C0000052']
+        concepts = self._cui.cuis_to_concepts(cuis)
+        self.assertIn(40614810, concepts)
