@@ -1,6 +1,7 @@
 import urllib.request
 import zipfile
 
+import pkg_resources
 from gensim.models import KeyedVectors
 from gensim.scripts.glove2word2vec import glove2word2vec
 from sqlalchemy import Column, Integer, String
@@ -34,7 +35,8 @@ Session = sessionmaker(bind=pgsql.get_reader())
 class Cui(object):
 
     def __init__(self, model='cui2vec_gensim.bin'):
-        __model = '../model/' + model
+        self._respath = pkg_resources.resource_filename('hephaestus', 'resources') + '/'
+        __model = self._respath + model
         self._model = KeyedVectors.load_word2vec_format(__model, unicode_errors='ignore', binary=True)
         self._cui = ""
         self._concept_id = 0
@@ -67,17 +69,17 @@ class Cui(object):
         self._cui = cui
         ohdsi_cui = self._session.query(Ohdsi2Cui).filter_by(cui=cui).one()
         self._concept_id = ohdsi_cui.concept_id
-        self.vocab = ohdsi_cui.vocabulary_id
+        self._vocab = ohdsi_cui.vocabulary_id
         _c = self._session.query(Concept).filter_by(concept_id=self._concept_id).one()
         self._concept = _c.concept_name
 
     @concept_id.setter
     def concept_id(self, concept_id):
         self._concept_id = concept_id
-        ohdsi_cui = self._session.query(Ohdsi2Cui).filter_by(concept_id=concept_id).one()
+        ohdsi_cui = self._session.query(Ohdsi2Cui).filter_by(concept_id=concept_id).first()
         self._cui = ohdsi_cui.cui
-        self.vocab = ohdsi_cui.vocabulary_id
-        _c = self._session.query(Concept).filter_by(concept_id=concept_id).one()
+        self._vocab = ohdsi_cui.vocabulary_id
+        _c = self._session.query(Concept).filter_by(concept_id=self._concept_id).one()
         self._concept = _c.concept_name
 
     @vocab.setter
@@ -103,15 +105,18 @@ class Cui(object):
 
     def similar_concepts(self, tn=3, cutoff=0):
         # query using gensim cui[0] is the cui and cui[1] is the score
-        cuis = self._model.most_similar(self._cui, topn=tn)
         concepts = []
-        for cui in cuis:
-            # Query the Ohdsi2Cui table  - cui to concept_id mapping
-            ohdsi_cui = self._session.query(Ohdsi2Cui).filter_by(cui=cui[0]).one()
-            _c = self._session.query(Concept).filter_by(concept_id=ohdsi_cui.concept_id).one()
-            concept = [cui[0], ohdsi_cui.concept_id, cui[1], _c.concept_name]
-            if cui[1] > cutoff:
-                concepts.append(concept)
+        try:
+            cuis = self._model.most_similar(self._cui, topn=tn)
+            for cui in cuis:
+                # Query the Ohdsi2Cui table  - cui to concept_id mapping
+                ohdsi_cui = self._session.query(Ohdsi2Cui).filter_by(cui=cui[0]).one()
+                _c = self._session.query(Concept).filter_by(concept_id=ohdsi_cui.concept_id).one()
+                concept = [cui[0], ohdsi_cui.concept_id, cui[1], _c.concept_name]
+                if cui[1] > cutoff:
+                    concepts.append(concept)
+        except:
+            pass
         return concepts
 
     def cuis_to_concepts(self, cuis):
@@ -124,6 +129,7 @@ class Cui(object):
     """
     concepts not similar to neg_cui
     """
+
     def similar_concepts_with_neg(self, neg_cui, tn):
         # query using gensim cui[0] is the cui and cui[1] is the score
         cuis = self._model.most_similar(positive=self._cui, negative=neg_cui, topn=tn)
@@ -170,15 +176,16 @@ class Cui(object):
 
     @staticmethod
     def init_model():
+        _respath = pkg_resources.resource_filename('hephaestus', 'resources') + '/'
         url = 'https://ndownloader.figshare.com/files/10959626'
         print('Downloading model...')
-        urllib.request.urlretrieve(url, '../model/' + 'cui2vec_pretrained.csv.zip')
+        urllib.request.urlretrieve(url, _respath + 'cui2vec_pretrained.csv.zip')
         print('Unzipping model...')
-        with zipfile.ZipFile('../model/' + 'cui2vec_pretrained.csv.zip', "r") as zip_ref:
-            zip_ref.extractall('../model/')
+        with zipfile.ZipFile(_respath + 'cui2vec_pretrained.csv.zip', "r") as zip_ref:
+            zip_ref.extractall(_respath)
         print('Processing model...')
-        with open('../model/' + 'cui2vec_pretrained.csv', 'r') as f:
-            with open('../model/' + "cui2vec_g.txt", 'w') as f1:
+        with open(_respath + 'cui2vec_pretrained.csv', 'r') as f:
+            with open(_respath + "cui2vec_g.txt", 'w') as f1:
                 next(f)  # skip header line
                 count = 0
                 for line in f:
@@ -188,9 +195,9 @@ class Cui(object):
                     f1.write(line)
                     count += 1
         print('Converting model ...')
-        glove2word2vec('../model/' + "cui2vec_g.txt", '../model/' + "cui2vec_w.txt")
-        wv_from_text = KeyedVectors.load_word2vec_format('../model/' + 'cui2vec_w.txt', unicode_errors='ignore')
-        wv_from_text.save_word2vec_format('../model/' + 'cui2vec_gensim.bin', binary=True)
+        glove2word2vec(_respath + "cui2vec_g.txt", _respath + "cui2vec_w.txt")
+        wv_from_text = KeyedVectors.load_word2vec_format(_respath + 'cui2vec_w.txt', unicode_errors='ignore')
+        wv_from_text.save_word2vec_format(_respath + 'cui2vec_gensim.bin', binary=True)
         print('Model processing completed ..')
 
 
