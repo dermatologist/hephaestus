@@ -91,7 +91,9 @@ class Cui(object):
     """
     Return cocepts and cuis similar to the given one
     
-    input: number of similar ones to return: ex: 2
+    input: 
+    tn - number of similar ones to return: default: 2
+    cutoff - cutoff value for similarity concept to be included. default=0 (all)
     output: list of [cui (string), concept_id (int), similarity score (float), 
     concept_name (string)]
     Example: [['C0002268', 40342168, 0.9437048435211182, 'Alpha-galactosidase A'], 
@@ -99,7 +101,7 @@ class Cui(object):
 
     """
 
-    def similar_concepts(self, tn):
+    def similar_concepts(self, tn=3, cutoff=0):
         # query using gensim cui[0] is the cui and cui[1] is the score
         cuis = self._model.most_similar(self._cui, topn=tn)
         concepts = []
@@ -108,7 +110,8 @@ class Cui(object):
             ohdsi_cui = self._session.query(Ohdsi2Cui).filter_by(cui=cui[0]).one()
             _c = self._session.query(Concept).filter_by(concept_id=ohdsi_cui.concept_id).one()
             concept = [cui[0], ohdsi_cui.concept_id, cui[1], _c.concept_name]
-            concepts.append(concept)
+            if cui[1] > cutoff:
+                concepts.append(concept)
         return concepts
 
     def cuis_to_concepts(self, cuis):
@@ -118,6 +121,9 @@ class Cui(object):
             concepts.append(result.concept_id)
         return concepts
 
+    """
+    concepts not similar to neg_cui
+    """
     def similar_concepts_with_neg(self, neg_cui, tn):
         # query using gensim cui[0] is the cui and cui[1] is the score
         cuis = self._model.most_similar(positive=self._cui, negative=neg_cui, topn=tn)
