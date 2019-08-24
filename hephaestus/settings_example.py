@@ -18,3 +18,9 @@ class LocalSettings(object):
     CDM_USER_PORT = 5432
     CDM_USER_SCHEMA = "hephaestus"
     CDM_USER_VOCAB = "cdm"
+
+    JAVA_HOME = ""
+    SPARK_HOME = ""
+    SPARK_MASTER_URL = ""
+    PYSPARK_SUBMIT_ARGS = ""
+    JDBC_CDM_URL = ""

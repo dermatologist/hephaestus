@@ -2,3 +2,5 @@ bonobo
 sqlalchemy
 psycopg2
 click
+findspark
+pyspark
