@@ -46,3 +46,7 @@ hephaestus/settings.py
 hephaestus/model/*
 # except
 !hephaestus/model/placeholder.md
+
+hephaestus/resources/*
+# except
+!hephaestus/resources/placeholder.md
