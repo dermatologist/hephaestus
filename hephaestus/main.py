@@ -27,7 +27,13 @@ def similar_cdm(concepts, num):
     similar_concepts = []
     for concept in concepts:
         c.concept_id = concept
-        similar_concepts.append(c.similar_concepts(num))
+        print(concept)
+        # c.cui = 'C1579029'
+        codes = c.similar_concepts(num)
+        print(c.concept, c.cui, codes)
+        for code in codes:
+            print(code)
+            similar_concepts.append(code[1])
     click.echo(similar_concepts)
 
 
