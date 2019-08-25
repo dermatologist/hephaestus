@@ -25,15 +25,10 @@ def cli(verbose, num, cui, cdm, fun):
 def similar_cdm(concepts, num):
     c = Cui()
     similar_concepts = []
-    for concept in concepts:
-        c.concept_id = concept
-        print(concept)
-        # c.cui = 'C1579029'
-        codes = c.similar_concepts(num)
-        print(c.concept, c.cui, codes)
-        for code in codes:
-            print(code)
-            similar_concepts.append(code[1])
+    c.concept_id = concepts
+    codes = c.similar_concepts(num)
+    for code in codes:
+        similar_concepts.append(code[1])
     click.echo(similar_concepts)
 
 
