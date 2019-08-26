@@ -15,9 +15,10 @@ spark = SparkSession \
 df = spark.read \
     .format("jdbc") \
     .option("url", C.JDBC_CDM_URL) \
-    .option("dbtable", "(select * from test) as tmptest") \
+    .option("dbtable", "(select * from vocabulary.concept) as tmptest") \
     .option("user", C.CDM_USER_NAME) \
     .option("password", C.CDM_USER_PASS) \
     .option("driver", "org.postgresql.Driver") \
     .load()
 df.printSchema()
+print(df.count())
