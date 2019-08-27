@@ -36,3 +36,10 @@ class TestCuiSpark(TestCase):
         sim_cuis = self.spark.sparkContext.parallelize(cuis, 2).flatMap(CuiSpark().similar_cuis).collect()
         print(sim_cuis)
         self.assertGreater(len(sim_cuis), 0)
+
+    def test_concepts_to_cuis(self):
+        concepts = [40614810, 198185]
+        cs = CuiSpark()
+        cuis = cs.concepts_to_cuis(self.spark, concepts)
+        print(cuis)
+        self.assertIn('C1579029', cuis)

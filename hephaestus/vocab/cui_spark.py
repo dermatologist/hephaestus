@@ -1,5 +1,8 @@
+import pandas
 import pkg_resources
 from gensim.models import KeyedVectors
+
+from hephaestus.settings import LocalSettings as C
 
 """
 This demonstrates how to use spark
@@ -38,3 +41,26 @@ class CuiSpark(object):
             return self.cui2vec.most_similar(cui)
         except:
             return []
+
+    def concepts_to_cuis(self, spark, concepts):
+        dbsql = "(select * from {}.ohdsi_to_cui) as tmptest"
+        dbsql = dbsql.format(C.CDM_USER_VOCAB)
+        df = spark.read \
+            .format("jdbc") \
+            .option("url", C.JDBC_CDM_URL) \
+            .option("dbtable", dbsql) \
+            .option("user", C.CDM_USER_NAME) \
+            .option("password", C.CDM_USER_PASS) \
+            .option("driver", "org.postgresql.Driver") \
+            .load()
+        # df.printSchema()
+        df.createOrReplaceTempView("ohdsi_cui")
+        sql = "SELECT cui FROM ohdsi_cui WHERE concept_id IN {}"
+        sql = sql.format(concepts)
+        # replace [] with () in the IN clause
+        _cuis = spark.sql(sql.replace("[", "(").replace("]", ")"))
+        pandas_cuis = _cuis.toPandas()
+        cuis = []
+        for index, rows in pandas_cuis.iterrows():
+            cuis.append(rows.cui.strip())
+        return cuis

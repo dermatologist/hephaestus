@@ -145,6 +145,13 @@ class Cui(object):
             concepts.append(result.concept_id)
         return concepts
 
+    def concepts_to_cuis(self, concepts):
+        cuis = []
+        results = self._session.query(Ohdsi2Cui.cui).filter(Ohdsi2Cui.concept_id.in_(concepts)).all()
+        for result in results:
+            cuis.append(result.cui.strip())
+        return cuis
+
     # Find the top-N most similar concepts, using the multiplicative combination objective,
     def cosmul_similar_concepts(self, tn):
         return self._model.most_similar_cosmul(self._cui[0], topn=tn)

@@ -44,3 +44,8 @@ class TestCui(TestCase):
         cuis = ['C0002268', 'C0000052']
         concepts = self.cui2vec.cuis_to_concepts(cuis)
         self.assertIn(40614810, concepts)
+
+    def test_concepts_to_cuis(self):
+        concepts = [40614810, 198185]
+        cuis = self.cui2vec.concepts_to_cuis(concepts)
+        self.assertIn('C1579029', cuis)
