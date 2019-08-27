@@ -41,7 +41,45 @@ Each data source requires customized ETL tools for this conversion. :stars: Heph
 
 ## How to contribute and use:
 
-Hephaestus is a work in progress. Please read CONTRIBUTING.md for more information on joining this project.
+### Hephaestus is a work in progress. Please read CONTRIBUTING.md for more information on joining this project.
+
+## What it does
+
+### ETL
+* [x] Work in progress
+
+### ML
+* [x] Work in progress
+
+### Deployment artifacts
+* [x] Work in progress
+
+## How to install
+
+```text
+
+Work in progress
+
+
+```
+
+## How to Use
+
+* Use [OHDSIconceptid2cui](https://github.com/E-Health/OHDSIconceptid2cui) to create the mapping table ohdsi_to_cui in the vocabulary schema for all [cui2vec](https://arxiv.org/abs/1804.01486) functions of Hephaestus.
+* WIP
+
+
+### Command-line options
+
+```text
+work in progress
+
+```
+
+| Command | Alternate | Description |
+| --- | --- | --- |
+| --inp | -i | Input file in the text format with <break> Topic </break> |
+
 
 
 ## Contributors and other projects
