@@ -57,6 +57,7 @@ class Cui(object):
         self._model = KeyedVectors.load_word2vec_format(__model, unicode_errors='ignore', binary=True)
         self._cui = []
         self._concept_id = []
+        self._anchors = []
         self._vocab = []
         self._concept = []
         self._engine = pgsql.get_reader()
@@ -81,10 +82,7 @@ class Cui(object):
 
     @property
     def anchors(self):
-        anchors = self.similar_concepts(20, only_id=True)
-        for concept in self._concept_id:
-            anchors.append(concept)
-        return list(dict.fromkeys(anchors))  # Remove duplicates
+        return self._anchors
 
     # setters after getters
 
@@ -255,6 +253,21 @@ class Cui(object):
                 write_session.add(c)
         write_session.commit()
 
+    def read_from_ohdsi(self, schema, concept_set_id):
+        WriteSession = sessionmaker(bind=pgsql.get_schema_engine(schema))
+        write_session = WriteSession()
+        items = []
+        items_array = write_session.query(ConceptSetItem.concept_id).filter_by(concept_set_id=concept_set_id).all()
+        for item in items_array:
+            items.append(item[0])
+        self.concept_id = items
+
+    def find_anchors(self, topn=20):
+        self._anchors = self.similar_concepts(topn, only_id=True)
+        for concept in self._concept_id:
+            self._anchors.append(concept)
+        self._anchors = list(dict.fromkeys(self._anchors))  # Remove duplicates
+        return self._anchors
 
 if __name__ == '__main__':
     Cui.init_model()

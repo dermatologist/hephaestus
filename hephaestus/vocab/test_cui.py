@@ -53,7 +53,15 @@ class TestCui(TestCase):
     def test_anchors(self):
         concepts = [40614810, 198185]
         self.cui2vec.concept_id = concepts
+        self.cui2vec.find_anchors(20)
         self.assertIn(44782429, self.cui2vec.anchors)
 
     def test_write_to_ohdsi(self):
         self.cui2vec.write_to_ohdsi("ohdsi", 2)
+
+    def test_read_from_ohdsi(self):
+        self.cui2vec.read_from_ohdsi("ohdsi", 2)
+
+    def test_find_anchors(self):
+        anchors = self.cui2vec.find_anchors(20)
+        self.assertIn(44782429, anchors)
