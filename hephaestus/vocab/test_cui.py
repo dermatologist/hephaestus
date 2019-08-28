@@ -63,5 +63,6 @@ class TestCui(TestCase):
         self.cui2vec.read_from_ohdsi("ohdsi", 2)
 
     def test_find_anchors(self):
+        self.cui2vec.read_from_ohdsi("ohdsi", 2)
         anchors = self.cui2vec.find_anchors(20)
         self.assertIn(44782429, anchors)

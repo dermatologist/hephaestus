@@ -134,22 +134,23 @@ class Cui(object):
         concepts = []
         cuis = []
         concept_ids = []
-        try:
-            for _cui in self._cui:
-                if neg_cui is None:
-                    cuis.append(self._model.most_similar(_cui, topn=tn))
-                else:
-                    cuis.append(self._model.most_similar(positive=_cui, negative=neg_cui, topn=tn))
-            for _cuis in cuis:  # _cuis is a list of most similar for each
-                for cui in _cuis:
-                    # Query the Ohdsi2Cui table  - cui to concept_id mapping
-                    ohdsi_cui = self._session.query(Ohdsi2Cui).filter_by(cui=cui[0]).one()
+
+        for _cui in self.cui:
+            if neg_cui is None:
+                cuis.append(self._model.most_similar(_cui, topn=tn))
+            else:
+                cuis.append(self._model.most_similar(positive=_cui, negative=neg_cui, topn=tn))
+        for _cuis in cuis:  # _cuis is a list of most similar for each
+            for cui in _cuis:
+                # Query the Ohdsi2Cui table  - cui to concept_id mapping
+                try:
+                    ohdsi_cui = self._session.query(Ohdsi2Cui).filter_by(cui=cui[0].strip()).one()
                     _c = self._session.query(Concept).filter_by(concept_id=ohdsi_cui.concept_id).one()
-                    concept = [cui[0], ohdsi_cui.concept_id, cui[1], _c.concept_name]
+                    concept = [cui[0].strip(), ohdsi_cui.concept_id, cui[1], _c.concept_name]
                     if cui[1] > cutoff:
                         concepts.append(concept)
-        except:
-            pass
+                except:
+                    pass
 
         if only_id:
             for c in concepts:
