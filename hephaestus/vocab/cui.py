@@ -26,6 +26,23 @@ class Ohdsi2Cui(Base):
     vocabulary_id = Column(String)
 
 
+class ConceptSetItem(Base):
+    __tablename__ = 'concept_set_item'
+
+    concept_set_item_id = Column(Integer, primary_key=True)
+    concept_set_id = Column(Integer)
+    concept_id = Column(Integer)
+    is_excluded = Column(Integer)
+    include_descendants = Column(Integer)
+    include_mapped = Column(Integer)
+
+    def __init__(self, concept_set_id):
+        self.concept_set_id = concept_set_id
+        self.is_excluded = 0
+        self.include_descendants = 0
+        self.include_mapped = 0
+
+
 """
 Class for sqlalchemy query
 """
@@ -62,12 +79,19 @@ class Cui(object):
     def concept(self):
         return self._concept
 
+    @property
+    def anchors(self):
+        anchors = self.similar_concepts(20, only_id=True)
+        for concept in self._concept_id:
+            anchors.append(concept)
+        return list(dict.fromkeys(anchors))  # Remove duplicates
+
     # setters after getters
 
     @cui.setter
     def cui(self, cui):
         self._cui = cui
-        #ohdsi_cuis = self._session.query(Ohdsi2Cui).filter_by(cui=cui).all()
+        # ohdsi_cuis = self._session.query(Ohdsi2Cui).filter_by(cui=cui).all()
         ohdsi_cuis = self._session.query(Ohdsi2Cui).filter(Ohdsi2Cui.cui.in_(cui)).all()
         for ohdsi_cui in ohdsi_cuis:
             self._concept_id.append(ohdsi_cui.concept_id)
@@ -78,10 +102,10 @@ class Cui(object):
     @concept_id.setter
     def concept_id(self, concept_id):
         self._concept_id = concept_id
-        #ohdsi_cuis = self._session.query(Ohdsi2Cui).filter_by(concept_id=concept_id).all()
+        # ohdsi_cuis = self._session.query(Ohdsi2Cui).filter_by(concept_id=concept_id).all()
         ohdsi_cuis = self._session.query(Ohdsi2Cui).filter(Ohdsi2Cui.concept_id.in_(concept_id)).all()
         for ohdsi_cui in ohdsi_cuis:
-            self._cui.append(ohdsi_cui.cui.strip()) # Removes trailing spaces
+            self._cui.append(ohdsi_cui.cui.strip())  # Removes trailing spaces
             self._vocab.append(ohdsi_cui.vocabulary_id)
             _c = self._session.query(Concept).filter_by(concept_id=ohdsi_cui.concept_id).one()
             self._concept.append(_c.concept_name)
@@ -209,6 +233,27 @@ class Cui(object):
         wv_from_text = KeyedVectors.load_word2vec_format(_respath + 'cui2vec_w.txt', unicode_errors='ignore')
         wv_from_text.save_word2vec_format(_respath + 'cui2vec_gensim.bin', binary=True)
         print('Model processing completed ..')
+
+    """
+    Writes anchors to concept_list_item if not present already
+    
+    input: ohdsi schema, concept_set_id
+    """
+
+    def write_to_ohdsi(self, schema, concept_set_id):
+        WriteSession = sessionmaker(bind=pgsql.get_schema_engine(schema))
+        write_session = WriteSession()
+        items = []
+        items_array = write_session.query(ConceptSetItem.concept_id).filter_by(concept_set_id=concept_set_id).all()
+        for item in items_array:
+            items.append(item[0])
+        anchors = self.anchors
+        for anchor in anchors:
+            if anchor not in items:
+                c = ConceptSetItem(concept_set_id)
+                c.concept_id = anchor
+                write_session.add(c)
+        write_session.commit()
 
 
 if __name__ == '__main__':
