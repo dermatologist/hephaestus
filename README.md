@@ -1,6 +1,8 @@
 
 # :stars: Hephaestus - Data analytics tools for Digital Health!
 
+*Hephaestus was the god of fire, metalworking, stone masonry, forges and the art of sculpture.*
+
 ## About
 
 Efficient and effective health data warehousing and analysis require a common data model. 
