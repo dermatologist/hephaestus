@@ -1,9 +1,10 @@
 from sqlalchemy.ext.automap import automap_base
 
 from hephaestus.service import pgsql
+from hephaestus.settings import LocalSettings as C
 
 Base = automap_base()
-engine = pgsql.get_reader()
+engine = pgsql.get_schema_engine(C.CDM_USER_VOCAB)
 # reflect the tables
 Base.prepare(engine, reflect=True)
 

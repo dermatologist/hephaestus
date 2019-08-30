@@ -10,6 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 from hephaestus.cdm.automap import Concept
 from hephaestus.service import pgsql
+from hephaestus.settings import LocalSettings as C
 
 Base = declarative_base()
 
@@ -46,7 +47,7 @@ class ConceptSetItem(Base):
 """
 Class for sqlalchemy query
 """
-Session = sessionmaker(bind=pgsql.get_reader())
+Session = sessionmaker(bind=pgsql.get_schema_engine(C.CDM_USER_VOCAB))
 
 
 class Cui(object):
@@ -60,7 +61,7 @@ class Cui(object):
         self._anchors = []
         self._vocab = []
         self._concept = []
-        self._engine = pgsql.get_reader()
+        self._engine = pgsql.get_schema_engine(C.CDM_USER_VOCAB)
         self._session = Session()
 
     # Getters before setters
