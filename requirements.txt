@@ -5,3 +5,4 @@ click
 findspark
 pyspark
 pandas
+xlrd
