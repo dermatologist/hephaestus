@@ -13,7 +13,5 @@ def read_dad():
         reader = csv.reader(csvFile)
         next(reader, None)  # skip the headers
         for row in reader:
-            # line = ', '.join(row).replace(' ', '')
-            line = row
-            yield line
+            yield row
     csvFile.close()
