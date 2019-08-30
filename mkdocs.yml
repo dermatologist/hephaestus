@@ -1,5 +1,6 @@
 site_name: Hephaestus
 nav:
   - Home: index.md
+  - CCI: cci.md
   - About: about.md
 theme: readthedocs
