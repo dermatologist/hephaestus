@@ -4,12 +4,42 @@ import urllib.request
 import pandas as pd
 import pkg_resources
 from sqlalchemy import MetaData, Table, Integer, Column, String
+from sqlalchemy.orm import sessionmaker
 
+from hephaestus.models.cci_model import CciModel
 from hephaestus.service import pgsql
 from hephaestus.settings import LocalSettings as C
 
+Session = sessionmaker(bind=pgsql.get_schema_engine(C.CDM_USER_SCHEMA))
 
 class Cci(object):
+
+    def __init__(self):
+        self._cci_code = ''
+        self._cci_short = ''
+        self._cci_long = ''
+        self._session = Session()
+
+    @property
+    def cci_code(self):
+        return self._cci_code
+
+    @property
+    def cci_short(self):
+        return self._cci_short
+
+    @property
+    def cci_long(self):
+        return self._cci_long
+
+    @cci_code.setter
+    def cci_code(self, cci_code):
+        self._cci_code = cci_code
+        _c = self._session.query(CciModel).filter_by(cci_code=cci_code).one()
+        self._cci_short = _c.cci_short
+        self._cci_long = _c.cci_long
+
+
     @staticmethod
     def get_cci():
         engine = pgsql.get_schema_engine(C.CDM_USER_SCHEMA)  # Access the DB Engine
