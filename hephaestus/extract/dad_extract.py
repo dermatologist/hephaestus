@@ -12,6 +12,10 @@ def read_dad():
     with open(dad_file, 'r') as csvFile:
         reader = csv.reader(csvFile)
         next(reader, None)  # skip the headers
+        count = 0
         for row in reader:
+            count += 1
+            if count > 10:
+                break
             yield row
     csvFile.close()
