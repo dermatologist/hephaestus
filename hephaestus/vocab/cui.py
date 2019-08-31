@@ -264,6 +264,12 @@ class Cui(object):
             items.append(item[0])
         self.concept_id = items
 
+    """
+    Creates anchors or common co-occuring concepts for the defined
+    concept set for the instance. defaults to 20 as in AMPHRODITE
+    
+    """
+
     def find_anchors(self, topn=20):
         self._anchors = self.similar_concepts(topn, only_id=True)
         for concept in self._concept_id:

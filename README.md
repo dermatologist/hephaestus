@@ -3,6 +3,10 @@
 
 *Hephaestus was the god of fire, metalworking, stone masonry, forges and the art of sculpture.*
 
+
+# [Documentation](https://hephaestus.readthedocs.io/en/latest/)
+
+
 ## About
 
 Efficient and effective health data warehousing and analysis require a common data model. 
@@ -45,9 +49,6 @@ Each data source requires customized ETL tools for this conversion. :stars: Heph
 
 ### Hephaestus is a work in progress. Please read CONTRIBUTING.md for more information on joining this project.
 
-## Documentation
-
-WIP [Here](https://hephaestus.readthedocs.io/en/latest/)
 
 ## What it does
 

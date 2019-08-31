@@ -21,7 +21,9 @@ from hephaestus.vocab.cui import Cui
               help='CDM Concepts as input')
 @click.option('--fun', '-f', multiple=True, default='',
               help='Functions to execute')
-def cli(verbose, num, cui, cdm, fun, emr, schema):
+@click.option('--cid', '-i', multiple=True,
+              help='A set of contextual ids to work on.')
+def cli(verbose, num, cui, cdm, fun, emr, schema, cid):
     if verbose:
         print("verbose")
     if 'similar' in fun:
@@ -33,6 +35,22 @@ def cli(verbose, num, cui, cdm, fun, emr, schema):
     if 'etl' in fun:
         if len(emr) > 0:
             run_etl(emr)
+    if 'anchor' in fun and len(cid) > 0:
+        # -schema may be defined, else public
+        # read existing concept IDs
+        # Usage python main.py -s ohdsi -i 2 -n 20 -f anchor
+        create_anchors(schema, cid, num)
+
+
+def create_anchors(schema, cid, num):
+    # process only first cid
+    c = Cui()
+    c.read_from_ohdsi(schema, cid[0])
+    if num is not None:
+        c.find_anchors(num)
+    else:
+        c.find_anchors()
+    c.write_to_ohdsi(schema, cid[0])
 
 
 def create_cdm(schema):

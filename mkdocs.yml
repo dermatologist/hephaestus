@@ -1,6 +1,7 @@
 site_name: Hephaestus
 nav:
   - Home: index.md
+  - Features: features.md
   - CUI: cui.md
   - CCI: cci.md
   - About: about.md
