@@ -15,7 +15,8 @@ def read_dad():
         count = 0
         for row in reader:
             count += 1
-            if count > 10:
+            if count > 200:
                 break
+            # row[160] = count
             yield row
     csvFile.close()
