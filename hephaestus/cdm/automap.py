@@ -1,7 +1,8 @@
+from sqlalchemy import Column, Integer, String, Date
 from sqlalchemy.ext.automap import automap_base
 
-from hephaestus.service import pgsql
 from hephaestus import settings as C
+from hephaestus.service import pgsql
 
 Base = automap_base()
 engine = pgsql.get_schema_engine(C.CDM_USER_VOCAB)
@@ -47,3 +48,13 @@ Concept = Base.classes.concept
 Dose_era = Base.classes.dose_era
 Cohort = Base.classes.cohort
 Domain = Base.classes.domain
+
+
+class Location_history(Base):
+    __tablename__ = 'location_history'
+    location_id = Column(Integer)
+    relationship_type_concept_id = Column(String)
+    domain_id = Column(String)
+    entity_id = Column(Integer)
+    start_date = Column(Date)
+    end_date = Column(Date)
