@@ -6,3 +6,4 @@ findspark
 pyspark
 pandas
 xlrd
+simple-settings

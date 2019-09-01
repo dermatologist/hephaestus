@@ -8,7 +8,7 @@ from sqlalchemy.orm import sessionmaker
 
 from hephaestus.models.cci_model import CciModel
 from hephaestus.service import pgsql
-from hephaestus.settings import LocalSettings as C
+from hephaestus import settings as C
 
 Session = sessionmaker(bind=pgsql.get_schema_engine(C.CDM_USER_SCHEMA))
 

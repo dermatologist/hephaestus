@@ -10,7 +10,7 @@ from sqlalchemy.orm import sessionmaker
 
 from hephaestus.cdm.automap import Concept
 from hephaestus.service import pgsql
-from hephaestus.settings import LocalSettings as C
+from hephaestus import settings as C
 
 Base = declarative_base()
 

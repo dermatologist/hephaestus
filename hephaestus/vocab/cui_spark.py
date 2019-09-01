@@ -2,7 +2,7 @@ import pandas
 import pkg_resources
 from gensim.models import KeyedVectors
 
-from hephaestus.settings import LocalSettings as C
+from hephaestus import settings as C
 
 """
 This demonstrates how to use spark

@@ -3,7 +3,7 @@ from unittest import TestCase
 import findspark
 import os
 
-from hephaestus.settings import LocalSettings as C
+from hephaestus import settings as C
 from hephaestus.vocab.cui_spark import CuiSpark
 
 """

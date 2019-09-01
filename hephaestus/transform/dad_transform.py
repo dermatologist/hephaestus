@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from hephaestus.cdm.automap import Location, Person, Observation, Procedure_occurrence, Provider
 from hephaestus.service import pgsql
-from hephaestus.settings import LocalSettings as C
+from hephaestus import settings as C
 
 
 def transform(*args):
