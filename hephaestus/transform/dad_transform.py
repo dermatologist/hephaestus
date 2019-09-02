@@ -3,20 +3,30 @@ from datetime import datetime
 from sqlalchemy.orm import Session
 
 from hephaestus import settings as C
-from hephaestus.cdm.automap import Location, Person, Observation, Procedure_occurrence, Provider
+from hephaestus.cdm.automap import Location, Person, Observation, Procedure_occurrence, Provider, Visit_occurrence, \
+    Condition_occurrence
 from hephaestus.service import pgsql
+from hephaestus.vocab.cdm_vocabulary import CdmVocabulary
+from hephaestus.utils.import_cci import Cci
 
 
 def transform(*args):
     location = Location()
     person = Person()
     observation = Observation()
-    procedure_occurence = Procedure_occurrence()
     provider = Provider()
+    visit_occurrence = Visit_occurrence()
+    condition_occurrence = Condition_occurrence()
+    procedure_occurrence = Procedure_occurrence()
     currentYear = datetime.now().year
     session = Session(pgsql.get_schema_engine(C.CDM_USER_DAD_SCHEMA))
-
+    cdm = CdmVocabulary()
+    cci = Cci()
     for row in args:
+        """
+        Transforming person
+        The unique personid from row 158 is used
+        """
         # person.person_id = row[0]
         person.person_id = row[158]
         person.person_source_value = row[158]
@@ -69,42 +79,76 @@ def transform(*args):
         person.gender_source_concept_id = C.CDM_NOT_DEFINED
         person.race_source_concept_id = C.CDM_NOT_DEFINED
         person.ethnicity_source_concept_id = C.CDM_NOT_DEFINED
-        if len(row[10].strip()) > 3:
-            yield row[10][:3] + '.' + row[10][3:4]
-        else:
-            yield row[10]
         yield person
 
-        # Fix any blank cells
+        """
+        Transforming visit
+        TODO: find concept numbers of categories and improve below
+        """
+        visit_occurrence.visit_occurrence_id = row[0]
+        visit_occurrence.person_id = person.person_id
+        visit_occurrence.visit_concept_id = C.CDM_ADM_DISC_HOSP_VISIT  # Hospice (hospital based)@Admit through Discharge Claim
+        visit_occurrence.visit_start_datetime = datetime.now()
+        visit_occurrence.visit_end_datetime = datetime.now()
+        visit_occurrence.visit_type_concept_id = C.CDM_ADM_DISC_HOSP_VISIT
+        visit_occurrence.visit_source_concept_id = C.CDM_ADM_DISC_HOSP_VISIT
+        visit_occurrence.visit_source_value = row[5]  # admit category
+        visit_occurrence.admitted_from_concept_id = C.CDM_ADM_DISC_HOSP_VISIT
+
+        yield visit_occurrence
+
+        # if len(row[10].strip()) > 3:
+        #     yield row[10][:3] + '.' + row[10][3:4]
+        # else:
+        #     yield row[10]
+
+        # # Fix any blank cells
         # column_range = range(1, 153)
         # for column in column_range:
         #     if row[column] == ' ':
         #         row[column] = '-1'
-        #
-        # # Create the linked diagnosis records
-        # column_range = range(11, 60)
-        # for column in column_range:
-        #     if column % 2 == 1:
-        #         if len(row[column]) > 2:
-        #             print(row[column] + ' | ' + row[column + 1])
-        #             sql = "INSERT INTO `morbidity` " \
-        #                   "(`icd_10_ca`, `type`, `encounter_encounter_id`) " \
-        #                   "VALUES (%s, %s, %s)"
-        #             cursor.execute(sql, (row[column], row[column + 1], encounter_id))
-        #
-        # # Create the linked intervention records
-        # column_range = range(61, 140)
-        # for column in column_range:
-        #     if column % 4 == 1:
-        #         if len(row[column]) > 2:
-        #             print(row[column] + ' | ' + row[column + 1] + ' | ' + row[column + 2] + ' | ' + row[
-        #                 column + 3])
-        #             sql = "INSERT INTO `intervention` " \
-        #                   "(`cci_code`, `status`, `location`, `anaesthetic`, `encounter_encounter_id`) " \
-        #                   "VALUES (%s, %s, %s, %s, %s)"
-        #             cursor.execute(sql, (row[column], row[column + 1],
-        #                                  row[column + 2], row[column + 3], encounter_id))
-        #
+
+        # Create the linked diagnosis records
+        column_range = range(10, 59)
+        for column in column_range:
+            if column % 2 == 0:
+                if len(row[column].strip()) > 2:
+                    # print(row[column] + ' | ' + row[column + 1])
+                    if len(row[column].strip()) > 3:
+                        icd = row[column][:3] + '.' + row[column][3:4]
+                    else:
+                        icd = row[column]
+                    condition_occurrence.person_id = person.person_id
+                    cdm.set_concept(icd)
+                    condition_occurrence.condition_concept_id = cdm.concept_id
+                    condition_occurrence.condition_start_datetime = datetime.now()
+                    condition_occurrence.condition_source_concept_id = row[column]
+                    # TODO Change this
+                    condition_occurrence.condition_type_concept_id = 0
+                    condition_occurrence.condition_status_concept_id = 0
+                    condition_occurrence.visit_occurrence_id = visit_occurrence.visit_occurrence_id
+                    yield condition_occurrence
+
+        # Create the linked intervention records
+        column_range = range(60, 139)
+        for column in column_range:
+            if column % 4 == 0:
+                if len(row[column].strip()) > 2:
+                    # print(row[column] + ' | ' + row[column + 1] + ' | ' + row[column + 2] + ' | ' + row[
+                    #     column + 3])
+                    cci.cci_code = row[column].strip()
+                    # print(cci.cci_long)
+                    procedure_occurrence.person_id = person.person_id
+                    # TODO CCI codes are not mapped yet
+                    procedure_occurrence.procedure_concept_id = 0
+                    procedure_occurrence.procedure_datetime = datetime.now()
+                    # TODO fix me
+                    procedure_occurrence.procedure_type_concept_id = 0
+                    procedure_occurrence.modifier_concept_id = 0
+                    procedure_occurrence.procedure_source_value = row[column].strip()
+                    procedure_occurrence.procedure_source_concept_id = 0
+                    yield procedure_occurrence
+
         # # Create the linked speciality care records
         # column_range = range(142, 153)
         # for column in column_range:

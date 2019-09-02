@@ -35,9 +35,12 @@ class Cci(object):
     @cci_code.setter
     def cci_code(self, cci_code):
         self._cci_code = cci_code
-        _c = self._session.query(CciModel).filter_by(cci_code=cci_code).one()
-        self._cci_short = _c.cci_short
-        self._cci_long = _c.cci_long
+        try:
+            _c = self._session.query(CciModel).filter_by(cci_code=cci_code).one()
+            self._cci_short = _c.cci_short
+            self._cci_long = _c.cci_long
+        except:
+            pass
 
 
     @staticmethod

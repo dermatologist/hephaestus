@@ -49,15 +49,21 @@ class CdmVocabulary(Concept):
 
     def set_concept(self, concept_code, vocabulary_id=None):
         self._concept_code = concept_code
-        if vocabulary_id is not None:
-            self._vocabulary_id = vocabulary_id
-            _concept = self._session.query(Concept).filter_by(concept_code=concept_code) \
-                .filter_by(vocabulary_id=vocabulary_id).one()
-        else:
-            _concept = self._session.query(Concept).filter_by(concept_code=concept_code).one()
-            self._vocabulary_id = _concept.vocabulary_id
-        self._concept_name = _concept.concept_name
-        self._domain_id = _concept.domain_id
-        self._concept_id = _concept.concept_id
-        self._concept_class_id = _concept.concept_class_id
-        self._concept_code = _concept.concept_code
+        try:
+            if vocabulary_id is not None:
+                self._vocabulary_id = vocabulary_id
+                _concept = self._session.query(Concept).filter_by(concept_code=concept_code) \
+                    .filter_by(vocabulary_id=vocabulary_id).one()
+            else:
+                _concept = self._session.query(Concept).filter_by(concept_code=concept_code).one()
+                self._vocabulary_id = _concept.vocabulary_id
+
+            self._concept_name = _concept.concept_name
+            self._domain_id = _concept.domain_id
+            self._concept_id = _concept.concept_id
+            self._concept_class_id = _concept.concept_class_id
+            self._concept_code = _concept.concept_code
+
+        except:
+            self._vocabulary_id = 0
+            self._concept_id = 0
