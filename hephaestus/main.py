@@ -3,8 +3,6 @@ import click
 
 from hephaestus import __version__
 from hephaestus.service.create_cdm import CreateCdm
-from hephaestus.service.get_graph import get_graph
-from hephaestus.vocab.cui import Cui
 
 
 @click.command()
@@ -44,6 +42,7 @@ def cli(verbose, num, cui, cdm, fun, emr, schema, cid):
 
 def create_anchors(schema, cid, num):
     # process only first cid
+    from hephaestus.vocab.cui import Cui
     c = Cui()
     c.read_from_ohdsi(schema, cid[0])
     if num is not None:
@@ -60,6 +59,7 @@ def create_cdm(schema):
 
 
 def similar_cdm(concepts, num):
+    from hephaestus.vocab.cui import Cui
     c = Cui()
     similar_concepts = []
     c.concept_id = concepts
@@ -72,6 +72,7 @@ def similar_cdm(concepts, num):
 def run_etl(emr):
     # parser = bonobo.get_argument_parser()
     # with bonobo.parse_args(parser) as options:
+    from hephaestus.service.get_graph import get_graph
     bonobo.run(
         get_graph(emr)
     )

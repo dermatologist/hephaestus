@@ -64,4 +64,7 @@ class CreateCdm(object):
         #     'https://raw.githubusercontent.com/OHDSI/CommonDataModel/master/PostgreSQL/OMOP%20CDM%20postgresql%20pk%20indexes.txt')
         # self.execute_sql(
         #     'https://raw.githubusercontent.com/OHDSI/CommonDataModel/master/PostgreSQL/OMOP%20CDM%20postgresql%20constraints.txt')
-        pass
+        #
+        self.execute_sql(
+            'https://raw.githubusercontent.com/E-Health/CommonDataModel/master/PostgreSQL/OMOP%20CDM%20postgresql%20pk%20indexes.txt'
+        )
