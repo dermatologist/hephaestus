@@ -1,10 +1,10 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
 from hephaestus import settings as C
 from hephaestus.cdm.automap import Location, Person, Observation, Procedure_occurrence, Provider, Visit_occurrence, \
-    Condition_occurrence
+    Condition_occurrence, Measurement
 from hephaestus.service import pgsql
 from hephaestus.vocab.cdm_vocabulary import CdmVocabulary
 from hephaestus.utils.import_cci import Cci
@@ -18,6 +18,7 @@ def transform(*args):
     visit_occurrence = Visit_occurrence()
     condition_occurrence = Condition_occurrence()
     procedure_occurrence = Procedure_occurrence()
+    measurement = Measurement()
     currentYear = datetime.now().year
     session = Session(pgsql.get_schema_engine(C.CDM_USER_DAD_SCHEMA))
     cdm = CdmVocabulary()
@@ -88,7 +89,7 @@ def transform(*args):
         visit_occurrence.visit_occurrence_id = row[0]
         visit_occurrence.person_id = person.person_id
         visit_occurrence.visit_concept_id = C.CDM_ADM_DISC_HOSP_VISIT  # Hospice (hospital based)@Admit through Discharge Claim
-        visit_occurrence.visit_start_datetime = datetime.now()
+        visit_occurrence.visit_start_datetime = datetime.now() - timedelta(days=int(row[153]))  # Length of stay
         visit_occurrence.visit_end_datetime = datetime.now()
         visit_occurrence.visit_type_concept_id = C.CDM_ADM_DISC_HOSP_VISIT
         visit_occurrence.visit_source_concept_id = C.CDM_ADM_DISC_HOSP_VISIT
