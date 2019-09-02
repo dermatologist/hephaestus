@@ -12,5 +12,5 @@ class TestCdmVocabulary(TestCase):
         self.assertEqual(self.cdmv.concept_code, '90688005')
 
     def test_set_concept(self):
-        self.cdmv.set_concept('SNOMED', '90688005')
+        self.cdmv.set_concept('90688005', 'SNOMED')
         self.assertEqual(self.cdmv.concept_id, 198185)

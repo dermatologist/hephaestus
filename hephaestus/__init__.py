@@ -8,7 +8,7 @@ from simple_settings import settings
 # TODO: Remove the next line before pushing module
 # settings below indicates settings.py file
 # This can be provided on the commandline: Ref: https://pypi.org/project/simple-settings/
-os.environ.setdefault('SIMPLE_SETTINGS', 'settings')
+os.environ.setdefault('SIMPLE_SETTINGS', os.path.dirname(os.path.abspath(__file__)) + '/settings.json')
 
 try:
     # Change here if project is renamed and does not equal the package name

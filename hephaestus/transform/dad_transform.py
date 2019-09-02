@@ -2,9 +2,9 @@ from datetime import datetime
 
 from sqlalchemy.orm import Session
 
+from hephaestus import settings as C
 from hephaestus.cdm.automap import Location, Person, Observation, Procedure_occurrence, Provider
 from hephaestus.service import pgsql
-from hephaestus import settings as C
 
 
 def transform(*args):
@@ -17,9 +17,10 @@ def transform(*args):
     session = Session(pgsql.get_schema_engine(C.CDM_USER_DAD_SCHEMA))
 
     for row in args:
-        person.person_id = row[0]
+        # person.person_id = row[0]
+        person.person_id = row[158]
         person.person_source_value = row[158]
-        location.location_source_value = row[1]
+        # location.location_source_value = row[1]
         if row[2].strip() == 'newborn':
             person.year_of_birth = currentYear
         elif row[2].strip() == '0 days to 11 months':
@@ -68,5 +69,52 @@ def transform(*args):
         person.gender_source_concept_id = C.CDM_NOT_DEFINED
         person.race_source_concept_id = C.CDM_NOT_DEFINED
         person.ethnicity_source_concept_id = C.CDM_NOT_DEFINED
+        if len(row[10].strip()) > 3:
+            yield row[10][:3] + '.' + row[10][3:4]
+        else:
+            yield row[10]
         yield person
-        yield location
+
+        # Fix any blank cells
+        # column_range = range(1, 153)
+        # for column in column_range:
+        #     if row[column] == ' ':
+        #         row[column] = '-1'
+        #
+        # # Create the linked diagnosis records
+        # column_range = range(11, 60)
+        # for column in column_range:
+        #     if column % 2 == 1:
+        #         if len(row[column]) > 2:
+        #             print(row[column] + ' | ' + row[column + 1])
+        #             sql = "INSERT INTO `morbidity` " \
+        #                   "(`icd_10_ca`, `type`, `encounter_encounter_id`) " \
+        #                   "VALUES (%s, %s, %s)"
+        #             cursor.execute(sql, (row[column], row[column + 1], encounter_id))
+        #
+        # # Create the linked intervention records
+        # column_range = range(61, 140)
+        # for column in column_range:
+        #     if column % 4 == 1:
+        #         if len(row[column]) > 2:
+        #             print(row[column] + ' | ' + row[column + 1] + ' | ' + row[column + 2] + ' | ' + row[
+        #                 column + 3])
+        #             sql = "INSERT INTO `intervention` " \
+        #                   "(`cci_code`, `status`, `location`, `anaesthetic`, `encounter_encounter_id`) " \
+        #                   "VALUES (%s, %s, %s, %s, %s)"
+        #             cursor.execute(sql, (row[column], row[column + 1],
+        #                                  row[column + 2], row[column + 3], encounter_id))
+        #
+        # # Create the linked speciality care records
+        # column_range = range(142, 153)
+        # for column in column_range:
+        #     if column % 2 == 0:
+        #         if int(row[column]) < 99:
+        #             print(row[column] + ' | ' + row[column + 1])
+        #             sql = "INSERT INTO `special_care` " \
+        #                   "(`unit`, `hours`, `encounter_encounter_id`) " \
+        #                   "VALUES (%s, %s, %s)"
+        #             cursor.execute(sql, (row[column], row[column + 1],
+        #                                  encounter_id))
+
+        # yield location
