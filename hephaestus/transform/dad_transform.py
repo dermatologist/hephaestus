@@ -1,9 +1,10 @@
+import random
 from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
 
 from hephaestus import settings as C
-from hephaestus.cdm.automap import Location, Person, Observation, Procedure_occurrence, Provider, Visit_occurrence, \
+from hephaestus.cdm.automap import Location, Person, Observation, Procedure_occurrence, Visit_occurrence, \
     Condition_occurrence, Measurement
 from hephaestus.service import pgsql
 from hephaestus.vocab.cdm_vocabulary import CdmVocabulary
@@ -11,16 +12,11 @@ from hephaestus.utils.import_cci import Cci
 
 
 def transform(*args):
-    location = Location()
     person = Person()
-    observation = Observation()
-    provider = Provider()
     visit_occurrence = Visit_occurrence()
     condition_occurrence = Condition_occurrence()
     procedure_occurrence = Procedure_occurrence()
-    measurement = Measurement()
     currentYear = datetime.now().year
-    session = Session(pgsql.get_schema_engine(C.CDM_USER_DAD_SCHEMA))
     cdm = CdmVocabulary()
     cci = Cci()
     for row in args:
@@ -72,14 +68,14 @@ def transform(*args):
             print("Not processed" + row[2].strip())
         # TODO to complete
         if row[3] == 'M':
-            person.gender_concept_id = C.CDM_CONCEPT_MALE
+            person.gender_concept_id = int(C.CDM_CONCEPT_MALE)
         else:
-            person.gender_concept_id = C.CDM_CONCEPT_FEMALE
-        person.race_concept_id = C.CDM_NOT_DEFINED
-        person.ethnicity_concept_id = C.CDM_NOT_DEFINED
-        person.gender_source_concept_id = C.CDM_NOT_DEFINED
-        person.race_source_concept_id = C.CDM_NOT_DEFINED
-        person.ethnicity_source_concept_id = C.CDM_NOT_DEFINED
+            person.gender_concept_id = int(C.CDM_CONCEPT_FEMALE)
+        person.race_concept_id = int(C.CDM_NOT_DEFINED)
+        person.ethnicity_concept_id = int(C.CDM_NOT_DEFINED)
+        person.gender_source_concept_id = int(C.CDM_NOT_DEFINED)
+        person.race_source_concept_id = int(C.CDM_NOT_DEFINED)
+        person.ethnicity_source_concept_id = int(C.CDM_NOT_DEFINED)
         yield person
 
         """
@@ -88,13 +84,15 @@ def transform(*args):
         """
         visit_occurrence.visit_occurrence_id = row[0]
         visit_occurrence.person_id = person.person_id
-        visit_occurrence.visit_concept_id = C.CDM_ADM_DISC_HOSP_VISIT  # Hospice (hospital based)@Admit through Discharge Claim
+        visit_occurrence.visit_concept_id = int(
+            C.CDM_ADM_DISC_HOSP_VISIT)  # Hospice (hospital based)@Admit through Discharge Claim
         visit_occurrence.visit_start_datetime = datetime.now() - timedelta(days=int(row[153]))  # Length of stay
         visit_occurrence.visit_end_datetime = datetime.now()
-        visit_occurrence.visit_type_concept_id = C.CDM_ADM_DISC_HOSP_VISIT
-        visit_occurrence.visit_source_concept_id = C.CDM_ADM_DISC_HOSP_VISIT
+        visit_occurrence.visit_type_concept_id = int(C.CDM_ADM_DISC_HOSP_VISIT)
+        visit_occurrence.visit_source_concept_id = int(C.CDM_ADM_DISC_HOSP_VISIT)
         visit_occurrence.visit_source_value = row[5]  # admit category
-        visit_occurrence.admitted_from_concept_id = C.CDM_ADM_DISC_HOSP_VISIT
+        visit_occurrence.admitted_from_concept_id = int(C.CDM_ADM_DISC_HOSP_VISIT)
+        visit_occurrence.discharge_to_concept_id = int(C.CDM_ADM_DISC_HOSP_VISIT)
 
         yield visit_occurrence
 
@@ -119,14 +117,16 @@ def transform(*args):
                         icd = row[column][:3] + '.' + row[column][3:4]
                     else:
                         icd = row[column]
+                    condition_occurrence.condition_occurrence_id = random.randint(1, 9223372036854775807)
                     condition_occurrence.person_id = person.person_id
                     cdm.set_concept(icd)
                     condition_occurrence.condition_concept_id = cdm.concept_id
                     condition_occurrence.condition_start_datetime = datetime.now()
-                    condition_occurrence.condition_source_concept_id = row[column]
+                    condition_occurrence.condition_source_concept_id = int(C.CDM_NOT_DEFINED)
+                    condition_occurrence.condition_source_value = row[column].strip()
                     # TODO Change this
-                    condition_occurrence.condition_type_concept_id = 0
-                    condition_occurrence.condition_status_concept_id = 0
+                    condition_occurrence.condition_type_concept_id = int(C.CDM_NOT_DEFINED)
+                    condition_occurrence.condition_status_concept_id = int(C.CDM_NOT_DEFINED)
                     condition_occurrence.visit_occurrence_id = visit_occurrence.visit_occurrence_id
                     yield condition_occurrence
 
@@ -139,15 +139,16 @@ def transform(*args):
                     #     column + 3])
                     cci.cci_code = row[column].strip()
                     # print(cci.cci_long)
+                    procedure_occurrence.procedure_occurrence_id = random.randint(1, 9223372036854775807)
                     procedure_occurrence.person_id = person.person_id
                     # TODO CCI codes are not mapped yet
-                    procedure_occurrence.procedure_concept_id = 0
+                    procedure_occurrence.procedure_concept_id = int(C.CDM_NOT_DEFINED)
                     procedure_occurrence.procedure_datetime = datetime.now()
                     # TODO fix me
-                    procedure_occurrence.procedure_type_concept_id = 0
-                    procedure_occurrence.modifier_concept_id = 0
+                    procedure_occurrence.procedure_type_concept_id = int(C.CDM_NOT_DEFINED)
+                    procedure_occurrence.modifier_concept_id = int(C.CDM_NOT_DEFINED)
                     procedure_occurrence.procedure_source_value = row[column].strip()
-                    procedure_occurrence.procedure_source_concept_id = 0
+                    procedure_occurrence.procedure_source_concept_id = int(C.CDM_NOT_DEFINED)
                     yield procedure_occurrence
 
         # # Create the linked speciality care records
