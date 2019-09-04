@@ -16,3 +16,6 @@ class TestDadEtlSpark(TestCase):
 
     def test_process_rows(self):
         self.fail()
+
+    def test_transform_person(self):
+        self.fail()
