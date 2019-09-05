@@ -50,6 +50,7 @@ class DadEtlSpark(object):
                "year_of_birth AS year_of_birth"
         # df1 = self._df
         self._df.show()
+        # https://changhsinlee.com/pyspark-udf/
 
     def read_head(self):
         self._df.show()
