@@ -7,7 +7,7 @@ pgsql_engine = pgsql.get_schema_engine(C.CDM_USER_DAD_SCHEMA)
 session = Session(pgsql_engine)
 
 
-def load(*args):
+def load2(*args):
     # for arg in args:
     #     className = arg.__class__.__name__
     #     if className == 'str':
@@ -20,10 +20,7 @@ def load(*args):
     # session = Session(pgsql.get_schema_engine(C.CDM_USER_DAD_SCHEMA))
     # Person = mysql_base.classes.person
     for arg in args:
-        className = arg.__class__.__name__
+        # className = arg.__class__.__name__
         # classDef = mysql_base.classes[className]
-        if className == 'person':
-            res = session.merge(arg)
-        else:
-            yield arg
+        res = session.merge(arg)
     session.commit()

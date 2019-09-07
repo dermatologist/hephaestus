@@ -68,11 +68,9 @@ class DadEtlSpark(object):
         mode = "overwrite"
         properties = {
             "user": self._username,
-            "password": self._password,
-            "schema": self._schema,
             "driver": "org.postgresql.Driver"
         }
-        df2.write.jdbc(url=self._url, table="person", mode=mode, properties=properties)
+        df2.write.jdbc(url=self._url, table="dad.person", mode=mode, properties=properties)
         # df2.show()
         # df1 = self._df
         # self._df.show()

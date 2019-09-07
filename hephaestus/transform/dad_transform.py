@@ -2,6 +2,7 @@ import random
 from datetime import datetime, timedelta
 
 from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker
 
 from hephaestus import settings as C
 from hephaestus.cdm.automap import Location, Person, Observation, Procedure_occurrence, Visit_occurrence, \
@@ -15,10 +16,12 @@ def transform(*args):
     person = Person()
     visit_occurrence = Visit_occurrence()
     condition_occurrence = Condition_occurrence()
-    procedure_occurrence = Procedure_occurrence()
+    # procedure_occurrence = Procedure_occurrence()
     currentYear = datetime.now().year
-    cdm = CdmVocabulary()
-    cci = Cci()
+    # cdm = CdmVocabulary()
+    # cci = Cci()
+    Session = sessionmaker(bind=pgsql.get_schema_engine(C.CDM_USER_VOCAB))
+    session = Session()
     for row in args:
         """
         Transforming person
@@ -95,6 +98,31 @@ def transform(*args):
         visit_occurrence.discharge_to_concept_id = int(C.CDM_ADM_DISC_HOSP_VISIT)
 
         yield visit_occurrence
+        # Create the linked diagnosis records
+        column_range = range(10, 59, 2)
+        for column in column_range:
+            if column % 2 == 0:
+                if len(row[column].strip()) > 2:
+                    # print(row[column] + ' | ' + row[column + 1])
+                    if len(row[column].strip()) > 3:
+                        icd = row[column][:3] + '.' + row[column][3:4]
+                    else:
+                        icd = row[column]
+                    condition_occurrence.condition_occurrence_id = random.randint(1, 9223372036854775807)
+                    condition_occurrence.person_id = row[158]
+                    # cdm.set_concept(icd)
+                    # condition_occurrence.condition_concept_id = cdm.concept_id
+                    condition_occurrence.condition_concept_id = CdmVocabulary.get_concept_id(icd, session)
+                    condition_occurrence.condition_start_datetime = datetime.now()
+                    condition_occurrence.condition_source_concept_id = int(C.CDM_NOT_DEFINED)
+                    condition_occurrence.condition_source_value = row[column].strip()
+                    # TODO Change this
+                    condition_occurrence.condition_type_concept_id = int(C.CDM_NOT_DEFINED)
+                    condition_occurrence.condition_status_concept_id = int(C.CDM_NOT_DEFINED)
+                    condition_occurrence.visit_occurrence_id = visit_occurrence.visit_occurrence_id
+                    yield condition_occurrence
+
+        yield row
 
         # if len(row[10].strip()) > 3:
         #     yield row[10][:3] + '.' + row[10][3:4]
@@ -108,48 +136,48 @@ def transform(*args):
         #         row[column] = '-1'
 
         # Create the linked diagnosis records
-        column_range = range(10, 59)
-        for column in column_range:
-            if column % 2 == 0:
-                if len(row[column].strip()) > 2:
-                    # print(row[column] + ' | ' + row[column + 1])
-                    if len(row[column].strip()) > 3:
-                        icd = row[column][:3] + '.' + row[column][3:4]
-                    else:
-                        icd = row[column]
-                    condition_occurrence.condition_occurrence_id = random.randint(1, 9223372036854775807)
-                    condition_occurrence.person_id = person.person_id
-                    cdm.set_concept(icd)
-                    condition_occurrence.condition_concept_id = cdm.concept_id
-                    condition_occurrence.condition_start_datetime = datetime.now()
-                    condition_occurrence.condition_source_concept_id = int(C.CDM_NOT_DEFINED)
-                    condition_occurrence.condition_source_value = row[column].strip()
-                    # TODO Change this
-                    condition_occurrence.condition_type_concept_id = int(C.CDM_NOT_DEFINED)
-                    condition_occurrence.condition_status_concept_id = int(C.CDM_NOT_DEFINED)
-                    condition_occurrence.visit_occurrence_id = visit_occurrence.visit_occurrence_id
-                    yield condition_occurrence
-
-        # Create the linked intervention records
-        column_range = range(60, 139)
-        for column in column_range:
-            if column % 4 == 0:
-                if len(row[column].strip()) > 2:
-                    # print(row[column] + ' | ' + row[column + 1] + ' | ' + row[column + 2] + ' | ' + row[
-                    #     column + 3])
-                    cci.cci_code = row[column].strip()
-                    # print(cci.cci_long)
-                    procedure_occurrence.procedure_occurrence_id = random.randint(1, 9223372036854775807)
-                    procedure_occurrence.person_id = person.person_id
-                    # TODO CCI codes are not mapped yet
-                    procedure_occurrence.procedure_concept_id = int(C.CDM_NOT_DEFINED)
-                    procedure_occurrence.procedure_datetime = datetime.now()
-                    # TODO fix me
-                    procedure_occurrence.procedure_type_concept_id = int(C.CDM_NOT_DEFINED)
-                    procedure_occurrence.modifier_concept_id = int(C.CDM_NOT_DEFINED)
-                    procedure_occurrence.procedure_source_value = row[column].strip()
-                    procedure_occurrence.procedure_source_concept_id = int(C.CDM_NOT_DEFINED)
-                    yield procedure_occurrence
+        # column_range = range(10, 59)
+        # for column in column_range:
+        #     if column % 2 == 0:
+        #         if len(row[column].strip()) > 2:
+        #             # print(row[column] + ' | ' + row[column + 1])
+        #             if len(row[column].strip()) > 3:
+        #                 icd = row[column][:3] + '.' + row[column][3:4]
+        #             else:
+        #                 icd = row[column]
+        #             condition_occurrence.condition_occurrence_id = random.randint(1, 9223372036854775807)
+        #             condition_occurrence.person_id = person.person_id
+        #             cdm.set_concept(icd)
+        #             condition_occurrence.condition_concept_id = cdm.concept_id
+        #             condition_occurrence.condition_start_datetime = datetime.now()
+        #             condition_occurrence.condition_source_concept_id = int(C.CDM_NOT_DEFINED)
+        #             condition_occurrence.condition_source_value = row[column].strip()
+        #             # TODO Change this
+        #             condition_occurrence.condition_type_concept_id = int(C.CDM_NOT_DEFINED)
+        #             condition_occurrence.condition_status_concept_id = int(C.CDM_NOT_DEFINED)
+        #             condition_occurrence.visit_occurrence_id = visit_occurrence.visit_occurrence_id
+        #             yield condition_occurrence
+        #
+        # # Create the linked intervention records
+        # column_range = range(60, 139)
+        # for column in column_range:
+        #     if column % 4 == 0:
+        #         if len(row[column].strip()) > 2:
+        #             # print(row[column] + ' | ' + row[column + 1] + ' | ' + row[column + 2] + ' | ' + row[
+        #             #     column + 3])
+        #             cci.cci_code = row[column].strip()
+        #             # print(cci.cci_long)
+        #             procedure_occurrence.procedure_occurrence_id = random.randint(1, 9223372036854775807)
+        #             procedure_occurrence.person_id = person.person_id
+        #             # TODO CCI codes are not mapped yet
+        #             procedure_occurrence.procedure_concept_id = int(C.CDM_NOT_DEFINED)
+        #             procedure_occurrence.procedure_datetime = datetime.now()
+        #             # TODO fix me
+        #             procedure_occurrence.procedure_type_concept_id = int(C.CDM_NOT_DEFINED)
+        #             procedure_occurrence.modifier_concept_id = int(C.CDM_NOT_DEFINED)
+        #             procedure_occurrence.procedure_source_value = row[column].strip()
+        #             procedure_occurrence.procedure_source_concept_id = int(C.CDM_NOT_DEFINED)
+        #             yield procedure_occurrence
 
         # # Create the linked speciality care records
         # column_range = range(142, 153)

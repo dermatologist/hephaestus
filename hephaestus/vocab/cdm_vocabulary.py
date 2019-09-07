@@ -67,3 +67,15 @@ class CdmVocabulary(Concept):
         except:
             self._vocabulary_id = 0
             self._concept_id = 0
+
+    @staticmethod
+    def get_concept_id(concept_code, session, vocabulary_id=None):
+        try:
+            if vocabulary_id is not None:
+                _concept = session.query(Concept.concept_id).filter_by(concept_code=concept_code) \
+                    .filter_by(vocabulary_id=vocabulary_id).one()
+            else:
+                _concept = session.query(Concept.concept_id).filter_by(concept_code=concept_code).one()
+            return _concept[0]
+        except:
+            return 0
