@@ -19,10 +19,13 @@ def transform2(*args):
     currentYear = datetime.now().year
     cdm = CdmVocabulary()
     cci = Cci()
+    _end_datetime = datetime.now()
+    _end_date = str(_end_datetime).split()[0]
+
     for row in args:
         className = row.__class__.__name__
         # classDef = mysql_base.classes[className]
-        if className == 'person' or className == 'visit_occurrence' or className == 'condition_occurrence':
+        if className == 'person' or className == 'visit_occurrence' or className == 'condition_occurrence' or className == 'observation_period':
             yield row
         else:
             # Create the linked intervention records
@@ -38,7 +41,8 @@ def transform2(*args):
                         procedure_occurrence.person_id = row[158]
                         # TODO CCI codes are not mapped yet
                         procedure_occurrence.procedure_concept_id = int(C.CDM_NOT_DEFINED)
-                        procedure_occurrence.procedure_datetime = datetime.now()
+                        procedure_occurrence.procedure_datetime = _end_datetime
+                        procedure_occurrence.procedure_date = _end_date
                         # TODO fix me
                         procedure_occurrence.procedure_type_concept_id = int(C.CDM_NOT_DEFINED)
                         procedure_occurrence.modifier_concept_id = int(C.CDM_NOT_DEFINED)

@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 
 from hephaestus import settings as C
 from hephaestus.cdm.automap import Location, Person, Observation, Procedure_occurrence, Visit_occurrence, \
-    Condition_occurrence, Measurement
+    Condition_occurrence, Measurement, Observation_period
 from hephaestus.service import pgsql
 from hephaestus.vocab.cdm_vocabulary import CdmVocabulary
 from hephaestus.utils.import_cci import Cci
@@ -16,13 +16,18 @@ def transform(*args):
     person = Person()
     visit_occurrence = Visit_occurrence()
     condition_occurrence = Condition_occurrence()
+    observation_period = Observation_period()
     # procedure_occurrence = Procedure_occurrence()
     currentYear = datetime.now().year
+    _end_datetime = datetime.now()
+    _end_date = str(_end_datetime).split()[0]
     # cdm = CdmVocabulary()
     # cci = Cci()
     Session = sessionmaker(bind=pgsql.get_schema_engine(C.CDM_USER_VOCAB))
     session = Session()
     for row in args:
+        _start_datetime = datetime.now() - timedelta(days=int(row[153]))
+        _start_date = str(_start_datetime).split()[0]
         """
         Transforming person
         The unique personid from row 158 is used
@@ -89,8 +94,10 @@ def transform(*args):
         visit_occurrence.person_id = person.person_id
         visit_occurrence.visit_concept_id = int(
             C.CDM_ADM_DISC_HOSP_VISIT)  # Hospice (hospital based)@Admit through Discharge Claim
-        visit_occurrence.visit_start_datetime = datetime.now() - timedelta(days=int(row[153]))  # Length of stay
-        visit_occurrence.visit_end_datetime = datetime.now()
+        visit_occurrence.visit_start_datetime = _start_datetime  # Length of stay
+        visit_occurrence.visit_end_datetime = _end_datetime
+        visit_occurrence.visit_start_date = _start_date  # Length of stay
+        visit_occurrence.visit_end_date = _end_date
         visit_occurrence.visit_type_concept_id = int(C.CDM_ADM_DISC_HOSP_VISIT)
         visit_occurrence.visit_source_concept_id = int(C.CDM_ADM_DISC_HOSP_VISIT)
         visit_occurrence.visit_source_value = row[5]  # admit category
@@ -98,6 +105,15 @@ def transform(*args):
         visit_occurrence.discharge_to_concept_id = int(C.CDM_ADM_DISC_HOSP_VISIT)
 
         yield visit_occurrence
+
+        observation_period.observation_period_id = row[0]
+        observation_period.person_id = person.person_id
+        observation_period.observation_period_start_date = _start_date  # Length of stay
+        observation_period.observation_period_end_date = _end_date
+        observation_period.period_type_concept_id = int(C.CDM_NOT_DEFINED)
+
+        yield observation_period
+
         # Create the linked diagnosis records
         column_range = range(10, 59, 2)
         for column in column_range:
@@ -113,7 +129,10 @@ def transform(*args):
                     # cdm.set_concept(icd)
                     # condition_occurrence.condition_concept_id = cdm.concept_id
                     condition_occurrence.condition_concept_id = CdmVocabulary.get_concept_id(icd, session)
-                    condition_occurrence.condition_start_datetime = datetime.now()
+                    condition_occurrence.condition_start_datetime = _start_datetime
+                    condition_occurrence.condition_end_datetime = _end_datetime
+                    condition_occurrence.condition_start_date = _start_date
+                    condition_occurrence.condition_end_date = _end_date
                     condition_occurrence.condition_source_concept_id = int(C.CDM_NOT_DEFINED)
                     condition_occurrence.condition_source_value = row[column].strip()
                     # TODO Change this
