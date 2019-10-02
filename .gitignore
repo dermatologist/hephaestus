@@ -41,6 +41,9 @@ docs/_build/*
 cover/*
 MANIFEST
 
+# VSCode
+.vscode
+
 # Local settings
 hephaestus/settings.py
 hephaestus/settings.json
