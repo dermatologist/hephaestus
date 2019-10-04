@@ -9,15 +9,20 @@
 """
 
 import sys
+
 from setuptools import setup
 
 # Add here console scripts and other entry points in ini-style format
-entry_points = """
-[console_scripts]
-# script_name = hephaestus.module:function
-# For example:
-# fibonacci = hephaestus.skeleton:run
-"""
+# entry_points = """
+# [console_scripts]
+# # script_name = hephaestus.module:function
+# # For example:
+# # fibonacci = hephaestus.skeleton:run
+# """
+
+entry_points = {
+    "console_scripts": ['hephaestus = hephaestus.main:main_routine()']
+}
 
 
 def setup_package():
