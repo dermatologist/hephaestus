@@ -1,8 +1,8 @@
 from sqlalchemy.ext.automap import automap_base
 
-import hephaestus.service.mysql as mysql
-import hephaestus.service.pgsql as pgsql
-from src.hephaestus import settings as C
+from . import mysql
+from . import pgsql
+from .. import settings as C
 
 
 def get_services(**options):

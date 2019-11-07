@@ -1,7 +1,7 @@
 from sqlalchemy.ext.automap import automap_base
 
-from src.hephaestus import settings as C
-from hephaestus.service import pgsql
+from .. import settings as C
+from ..service import pgsql
 
 Base = automap_base()
 engine = pgsql.get_schema_engine(C.CDM_USER_SCHEMA_AUTOMAP)

@@ -8,9 +8,9 @@ from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-from hephaestus.cdm.automap import Concept
-from hephaestus.service import pgsql
-from src.hephaestus import settings as C
+from .. import settings as C
+from ..cdm.automap import Concept
+from ..service import pgsql
 
 Base = declarative_base()
 

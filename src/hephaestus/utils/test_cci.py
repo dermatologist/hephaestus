@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from hephaestus.utils.import_cci import Cci
+from ..utils.import_cci import Cci
 
 
 class TestCci(TestCase):

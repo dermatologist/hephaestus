@@ -1,9 +1,9 @@
 import bonobo
 
 from src.hephaestus.extract import cci_extract, dad_extract
-from hephaestus.load import dad_load, dad_load_2
 from src.hephaestus.load import cci_load
 from src.hephaestus.transform import dad_transform, cci_transform, dad_transform_2
+from ..load import dad_load, dad_load_2
 
 
 def get_graph(emr):

@@ -1,7 +1,7 @@
 import requests
 from sqlalchemy.orm import Session
 
-from hephaestus.service.pgsql import get_schema_engine
+from ..service.pgsql import get_schema_engine
 
 
 class CreateCdm(object):

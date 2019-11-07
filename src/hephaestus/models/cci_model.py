@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, Column, String
 from sqlalchemy.ext.declarative import declarative_base
 
-from src.hephaestus import settings as C
+from .. import settings as C
 
 Base = declarative_base()
 

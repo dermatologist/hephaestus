@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from hephaestus.service import pgsql
-from src.hephaestus import settings as C
+from .. import settings as C
+from ..service import pgsql
 
 pgsql_engine = pgsql.get_schema_engine(C.CDM_USER_DAD_SCHEMA)
 session = Session(pgsql_engine)

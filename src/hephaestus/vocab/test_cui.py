@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from hephaestus.vocab.cui import Cui
+from ..vocab.cui import Cui
 
 
 class TestCui(TestCase):

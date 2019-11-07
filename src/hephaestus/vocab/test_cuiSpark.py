@@ -1,10 +1,10 @@
+import os
 from unittest import TestCase
 
 import findspark
-import os
 
-from src.hephaestus import settings as C
 from src.hephaestus.vocab.cui_spark import CuiSpark
+from .. import settings as C
 
 """
 This test demonstrate how to use spark

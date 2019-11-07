@@ -1,8 +1,8 @@
 from sqlalchemy.orm import sessionmaker
 
-from src.hephaestus import settings as C
-from hephaestus.cdm.automap import Concept
-from hephaestus.service import pgsql
+from .. import settings as C
+from ..cdm.automap import Concept
+from ..service import pgsql
 
 Session = sessionmaker(bind=pgsql.get_schema_engine(C.CDM_USER_VOCAB))
 

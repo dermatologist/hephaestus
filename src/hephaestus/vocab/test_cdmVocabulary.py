@@ -1,12 +1,10 @@
 from unittest import TestCase
 
-from hephaestus.vocab.cdm_vocabulary import CdmVocabulary
-
 from sqlalchemy.orm import sessionmaker
 
-from src.hephaestus import settings as C
-from hephaestus.cdm.automap import Concept
-from hephaestus.service import pgsql
+from .. import settings as C
+from ..service import pgsql
+from ..vocab.cdm_vocabulary import CdmVocabulary
 
 Session = sessionmaker(bind=pgsql.get_schema_engine(C.CDM_USER_VOCAB))
 

@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
-from hephaestus.service import pgsql
-from src.hephaestus import settings as C
+from .. import settings as C
+from ..service import pgsql
 
 
 def load(*args):

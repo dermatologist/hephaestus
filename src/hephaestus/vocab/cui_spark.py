@@ -1,7 +1,7 @@
 import pkg_resources
 from gensim.models import KeyedVectors
 
-from src.hephaestus import settings as C
+from .. import settings as C
 
 """
 This demonstrates how to use spark

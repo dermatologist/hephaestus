@@ -2,7 +2,7 @@ import csv
 
 import pkg_resources
 
-from src.hephaestus import settings as C
+from .. import settings as C
 
 respath = pkg_resources.resource_filename('hephaestus', 'resources') + '/'
 dad_file = respath + C.SOURCE_USER_CCI_FILE

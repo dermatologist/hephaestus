@@ -3,8 +3,8 @@ import csv
 import pkg_resources
 from sqlalchemy import MetaData, Column, Integer, String, Table, Date
 
-from src.hephaestus import settings as C
-from hephaestus.service import pgsql
+from .. import settings as C
+from ..service import pgsql
 
 respath = pkg_resources.resource_filename('hephaestus', 'resources') + '/'
 dad_file = respath + C.SOURCE_USER_DAD_FILE

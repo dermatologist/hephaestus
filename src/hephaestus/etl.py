@@ -1,9 +1,9 @@
 import bonobo
 
-import hephaestus.extract.test as test
-import hephaestus.load.test as testload
-import src.hephaestus.service.service as service
-import src.hephaestus.transform.openmrs_cdm5 as testtransform
+from .extract import test as test
+from .load import test as testload
+from .service import service as service
+from .transform import openmrs_cdm5 as testtransform
 
 
 def get_graph(**options):

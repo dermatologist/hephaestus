@@ -1,6 +1,6 @@
 from sqlalchemy import create_engine
 
-from src.hephaestus import settings as C
+from .. import settings as C
 
 """
 Reader reads engine from the vocabulary schema for automaping

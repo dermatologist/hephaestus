@@ -1,14 +1,11 @@
 import random
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from sqlalchemy.orm import Session
-
-from src.hephaestus import settings as C
-from hephaestus.cdm.automap import Location, Person, Observation, Procedure_occurrence, Visit_occurrence, \
-    Condition_occurrence, Measurement
-from hephaestus.service import pgsql
-from hephaestus.vocab.cdm_vocabulary import CdmVocabulary
-from hephaestus.utils.import_cci import Cci
+from .. import settings as C
+from ..cdm.automap import Person, Procedure_occurrence, Visit_occurrence, \
+    Condition_occurrence
+from ..utils.import_cci import Cci
+from ..vocab.cdm_vocabulary import CdmVocabulary
 
 
 def transform2(*args):

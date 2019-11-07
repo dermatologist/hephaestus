@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from hephaestus.etl.dad_etl_spark import DadEtlSpark
+from ..etl.dad_etl_spark import DadEtlSpark
 
 
 class TestDadEtlSpark(TestCase):

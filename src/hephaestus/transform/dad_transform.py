@@ -3,11 +3,11 @@ from datetime import datetime, timedelta
 
 from sqlalchemy.orm import sessionmaker
 
-from src.hephaestus import settings as C
-from hephaestus.cdm.automap import Person, Visit_occurrence, \
+from .. import settings as C
+from ..cdm.automap import Person, Visit_occurrence, \
     Condition_occurrence, Observation_period
-from hephaestus.service import pgsql
-from hephaestus.vocab.cdm_vocabulary import CdmVocabulary
+from ..service import pgsql
+from ..vocab.cdm_vocabulary import CdmVocabulary
 
 
 def transform(*args):

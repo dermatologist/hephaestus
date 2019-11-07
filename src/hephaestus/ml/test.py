@@ -1,7 +1,8 @@
-import findspark
 import os
 
-from src.hephaestus import settings as C
+import findspark
+
+from .. import settings as C
 
 os.environ["JAVA_HOME"] = C.JAVA_HOME
 os.environ['PYSPARK_SUBMIT_ARGS'] = C.PYSPARK_SUBMIT_ARGS

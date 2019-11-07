@@ -7,8 +7,8 @@ from sqlalchemy import MetaData, Table, Integer, Column, String
 from sqlalchemy.orm import sessionmaker
 
 from src.hephaestus.models.cci_model import CciModel
-from hephaestus.service import pgsql
-from src.hephaestus import settings as C
+from .. import settings as C
+from ..service import pgsql
 
 Session = sessionmaker(bind=pgsql.get_schema_engine(C.CDM_USER_SCHEMA))
 

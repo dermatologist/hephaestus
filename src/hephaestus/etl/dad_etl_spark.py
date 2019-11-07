@@ -1,10 +1,10 @@
+import os
 from datetime import datetime
 
 import findspark
-import os
 import pkg_resources
 
-from src.hephaestus import settings as C
+from .. import settings as C
 
 
 class DadEtlSpark(object):
