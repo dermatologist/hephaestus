@@ -45,12 +45,12 @@ MANIFEST
 .vscode
 
 # Local settings
-hephaestus/settings.py
-hephaestus/settings.json
-hephaestus/model/*
+src/hephaestus/settings.py
+src/hephaestus/settings.json
+src/hephaestus/model/*
 # except
-!hephaestus/model/placeholder.md
+!src/hephaestus/model/placeholder.md
 
-hephaestus/resources/*
+src/hephaestus/resources/*
 # except
-!hephaestus/resources/placeholder.md
+!src/hephaestus/resources/placeholder.md
