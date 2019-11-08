@@ -69,15 +69,6 @@ class DadVector(object):
         morbidity['diseases']= morbidity.values.tolist()
         interventions['treatments']=interventions.values.tolist()
 
-        print(morbidity)
-        print("----------------")
-        print(interventions)
-        print("----------------")
-        print(demographics)
-        print("----------------")
-        print(los)
-        print("----------------")
-        
         mlb = MultiLabelBinarizer()
         disease_vector = mlb.fit_transform(morbidity['diseases'].dropna())
 
