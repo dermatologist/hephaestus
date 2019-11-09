@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import sessionmaker
 
 from .. import settings as C
+from .. import constants as Const
+
 from ..cdm.automap import Person, Visit_occurrence, \
     Condition_occurrence, Observation_period
 from ..service import pgsql
@@ -74,9 +76,9 @@ def transform(*args):
             print("Not processed" + row[2].strip())
         # TODO to complete
         if row[3] == 'M':
-            person.gender_concept_id = int(C.CDM_CONCEPT_MALE)
+            person.gender_concept_id = int(Const.OMOP_CONSTANTS.GENDER_MALE)
         else:
-            person.gender_concept_id = int(C.CDM_CONCEPT_FEMALE)
+            person.gender_concept_id = int(Const.OMOP_CONSTANTS.GENDER_FEMALE)
         person.race_concept_id = int(C.CDM_NOT_DEFINED)
         person.ethnicity_concept_id = int(C.CDM_NOT_DEFINED)
         person.gender_source_concept_id = int(C.CDM_NOT_DEFINED)

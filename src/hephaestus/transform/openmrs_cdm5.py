@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from .. import settings as C
+from .. import constants as Const
 
 
 def transform(*args):
@@ -20,9 +21,9 @@ def transform_person(openmrs_person, cdm_person, patient_identifier=None):
 
     cdm_person.gender_concept_id = 0  # Default unknown value
     if openmrs_person.gender.upper() == 'M':
-        cdm_person.gender_concept_id = C.OMOP_CONSTANTS.GENDER_MALE
+        cdm_person.gender_concept_id = Const.OMOP_CONSTANTS.GENDER_MALE
     if openmrs_person.gender.upper() == 'F':
-        cdm_person.gender_concept_id = C.OMOP_CONSTANTS.GENDER_FEMALE
+        cdm_person.gender_concept_id = Const.OMOP_CONSTANTS.GENDER_FEMALE
 
     # Birthdate
     dt = datetime.strptime(openmrs_person.birthdate, '%Y-%m-%d %H:%M:%S')

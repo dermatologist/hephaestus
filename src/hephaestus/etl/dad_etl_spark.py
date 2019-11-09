@@ -5,7 +5,7 @@ import findspark
 import pkg_resources
 
 from .. import settings as C
-
+from .. import constants as Const
 
 class DadEtlSpark(object):
 
@@ -89,9 +89,9 @@ class DadEtlSpark(object):
     @staticmethod
     def gender_to_code(gender):
         if gender.strip() == 'M':
-            return C.CDM_CONCEPT_MALE
+            return Const.OMOP_CONSTANTS.GENDER_MALE
         else:
-            return C.CDM_CONCEPT_FEMALE
+            return Const.OMOP_CONSTANTS.GENDER_FEMALE
 
     @staticmethod
     def age_to_year(age):
