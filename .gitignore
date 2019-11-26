@@ -54,3 +54,6 @@ src/hephaestus/model/*
 src/hephaestus/resources/*
 # except
 !src/hephaestus/resources/placeholder.md
+
+# This Gist is downloaded by GIST vscode plugin
+notes/public-gist.md
