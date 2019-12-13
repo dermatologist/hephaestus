@@ -1,0 +1,41 @@
+[tool.poetry]
+name = "hephaestus"
+version = "0.1.0"
+description = "Generic ETL Tools for OHDSI"
+authors = ["Bellraj Eapen <github@gulfdoctor.net>"]
+license = "gpl-3.0"
+readme = 'README.md'  # Markdown files are supported
+
+repository = "https://github.com/dermatologist/hephaestus"
+homepage = "https://github.com/dermatologist/hephaestus"
+keywords = ["data warehouse", "EMR"]
+documentation = "https://github.com/dermatologist/hephaestus"
+
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python"
+]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+sqlalchemy = "^1.3.11"
+bonobo-sqlalchemy = "^0.6.1"
+bonobo = "^0.6.4"
+psycopg2 = "^2.8"
+click = "^7.0"
+findspark = "^1.3.0"
+pyspark = "^2.4.4"
+pandas = "^0.25.3"
+xlrd = "^1.2.0"
+simple-settings = "^0.19.1"
+python-dotenv = "^0.10.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.3"
+
+[tool.poetry.scripts]
+hephaestus = "hephaestus.main:main_routine"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
