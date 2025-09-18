@@ -1,11 +1,10 @@
 
-# :stars: Hephaestus - Data analytics tools for Digital Health!
+# Hephaestus - Data analytics tools for Digital Health!
 
 *Hephaestus was the god of fire, metalworking, stone masonry, forges and the art of sculpture.*
 
 
-# [Documentation](https://hephaestus.readthedocs.io/en/latest/)
-
+# :stars: Deprecated - Please use [PyOMOP](https://github.com/dermatologist/pyomop) instead.
 
 ## About
 
